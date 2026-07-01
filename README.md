@@ -48,6 +48,7 @@ The first simulator is intentionally small and dependency-free. It is a scaffold
 
 ## Repository Map
 
+- `docs/source-triad.md` - how ComPilot, Nature 2026, and the Asolaria report fit together.
 - `docs/nature-2026-metal-cluster-interferometry.md` - physics anchor.
 - `docs/research-program.md` - staged Q-PRISM roadmap.
 - `docs/claims-gate.md` - what can and cannot be claimed.
