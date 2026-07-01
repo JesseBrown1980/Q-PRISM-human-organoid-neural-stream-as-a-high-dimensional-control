@@ -85,6 +85,20 @@ QPRISM_CUBE_CHUNK|schema=qprism.cube_chunk.v1|source_sha256=...|window=...|tuple
 
 That is the 43+ / 47D / 60D+ absorption frame in repo terms: addressable levels and language surfaces represent the input; the scheduler consumes the cube-level control signature.
 
+
+## Public Reductions Repo Spine
+
+GitHub owning surface: `JesseBrown1980/what-is-asolaria---how-do-we-get-reductions-in-everything`, `main` tip `5648e81` when checked from Liris on 2026-07-01. Evidence tag: `MEASURED_GITHUB_PUBLIC_SLICE`, not metal/runtime truth by itself.
+
+The README sharpens the Q-PRISM inheritance:
+
+- **Fabric-first OLD vs NEW:** the old Node-era 10k-room / BigPickle / Gulp / cube / GNN fabric is the system that already self-improved (`ACER_FABRIC_MEASURED`); Rust Host-8 is the migration/improvement layer, not a reason to deflate the old achievements.
+- **Reductions are multi-axis:** identity, memory, process, downstream work, recursion cost, search/centrality, and resident set are separate reduction axes. One number never summarizes the system.
+- **HBP tuple proofs:** public `proofs/` are HBP tuple form, sha256-sealed, `json=0`, and include address-space / conversational-language-space capacity proofs. The frame is address/expressive capacity, not materialized storage.
+- **Cube mechanism:** `cubes/` is the public mechanism folder for formalizing things into cubes across tuple-range addressing, shard-quant receipts, tensor-collapse inference, and bounded carriers.
+- **100B prism -> cube:** the newer proof row says the harvest was quanted BEHCS-256 -> 1024 -> HyperBEHCS into 256 <=10-byte genius cube-weights, minted to the matrix store as referential content-address cubes.
+
+Q-PRISM should therefore inherit the reductions repo as the public publication slice for *why* cube absorption is lawful: possibility stays cheap, action stays gated, and the hot path is address/descriptor/tuple text rather than JSON or raw-body fanout.
 ## Prism / Comb Recomposition Law
 
 The reduction layer is not a single alphabet, single tuple, or single codec. It is a prism stack:
