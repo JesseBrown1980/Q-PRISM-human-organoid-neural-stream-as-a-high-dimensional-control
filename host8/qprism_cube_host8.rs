@@ -48,6 +48,56 @@ impl Host8 {
     }
 }
 
+// Brown-Hilbert digital expansion: space is EXPANDABLE per slice (frame). A cube's address is a
+// 1024-ary prefix (depth 6 = 2^60, the 60D ceiling). Between any two addresses a new pid-addressable
+// point can be INJECTED one slice deeper (Brown & Fedotov, Digital Physics: frame-based discrete
+// universe, spacetime pixels). Points slot in-between as space/time grows to the next slice.
+pub const BH_RADIX: u64 = 1024;
+pub const BH_DEPTH: usize = 6;
+
+pub fn bh_prefix(handle8_hex: &str) -> Vec<u16> {
+    let mut n = u64::from_str_radix(handle8_hex, 16).unwrap_or(0) % BH_RADIX.pow(BH_DEPTH as u32);
+    let mut d = vec![0u16; BH_DEPTH];
+    for i in (0..BH_DEPTH).rev() {
+        d[i] = (n % BH_RADIX) as u16;
+        n /= BH_RADIX;
+    }
+    d
+}
+
+fn bh_int(digits: &[u16]) -> u128 {
+    let mut n: u128 = 0;
+    for &x in digits {
+        n = n * BH_RADIX as u128 + x as u128;
+    }
+    n
+}
+
+/// Inject a pid-addressable point strictly BETWEEN a and b, one slice deeper (the next slice).
+pub fn bh_inject_between(a: &[u16], b: &[u16]) -> Vec<u16> {
+    let l = a.len().max(b.len()) + 1;
+    let mut aa = a.to_vec(); aa.resize(l, 0);
+    let mut bb = b.to_vec(); bb.resize(l, 0);
+    let (mut ai, mut bi) = (bh_int(&aa), bh_int(&bb));
+    if ai > bi {
+        std::mem::swap(&mut ai, &mut bi);
+    }
+    let mut ci = (ai + bi) / 2;
+    if ci <= ai {
+        ci = ai + 1;
+    }
+    let mut out = vec![0u16; l];
+    for i in (0..l).rev() {
+        out[i] = (ci % BH_RADIX as u128) as u16;
+        ci /= BH_RADIX as u128;
+    }
+    out
+}
+
+pub fn bh_render(digits: &[u16]) -> String {
+    digits.iter().map(|d| d.to_string()).collect::<Vec<_>>().join(".")
+}
+
 pub const GRAPHIFY_SCHEMA: &str = "ASOLARIA-GRAPHIFY-V3-HYPERBEHCS-60D";
 pub const SELECTOR_CONSTRAINT: &str = "selector_constraint:hyperbehcs-selector-router-60d";
 pub const SELECTOR_AXES: [&str; 11] = [
@@ -111,7 +161,7 @@ fn axis_value(axis: &str, h: &CubeHandles, room: &str, slice_time: &str) -> Stri
 }
 
 /// Emit the bilateral-converged json=0 kernel-native cube row (the primary carrier). No JSON.
-pub fn cube_row(h: &CubeHandles, room: &str, slice_time: &str, tuple_bytes: usize) -> String {
+pub fn cube_row(h: &CubeHandles, room: &str, slice_time: &str, frame: u64, tuple_bytes: usize) -> String {
     let mut s = String::from("QPRISMCUBE");
     s.push_str(&format!("|schema=qprism.host8.graphify_selector.v1|graphify_schema={}", GRAPHIFY_SCHEMA));
     s.push_str(&format!("|handle8={}|source8={}|tuple8={}|glyph={}", h.node8, h.source8, h.tuple8, h.glyph));
@@ -120,6 +170,9 @@ pub fn cube_row(h: &CubeHandles, room: &str, slice_time: &str, tuple_bytes: usiz
     // Jesse's pixels-first: the backend cube IS the representation; the frontend is only a raw
     // projection (pixels) of it — inert, no logic. machine hot path = tuple-text; JSON = cold.
     s.push_str("|hot_path=HBP_HBI_TUPLE_TEXT|pixels_first=1|frontend=raw_projection_inert");
+    // space expandable per slice; pid points can be injected in-between (Brown-Hilbert digital expansion)
+    let bh = bh_render(&bh_prefix(&h.node8));
+    s.push_str(&format!("|space_expandable=1|frame={}|bh_depth={}|bh_prefix={}|inject_between=bh_digital_expansion", frame, BH_DEPTH, bh));
     s.push_str("|agentterms_fedenv_fire=0|dispatch=0|provider_fanout=0|hardware_fire=0");
     s.push_str("|compile=0|interpret=0|fire=0");
     s.push_str(&format!("|{}|axis_count={}", SELECTOR_CONSTRAINT, SELECTOR_AXES.len()));
@@ -161,9 +214,11 @@ mod tests {
         // bilateral parity target: tuple8=7be9d49b3af31036 -> node PK 5edd3a45544437d4
         assert_eq!(h.tuple8, "7be9d49b3af31036");
         assert_eq!(h.node8, "5edd3a45544437d4");
-        let row = cube_row(&h, "qprism/SpanishBCBL/stage2/cube-absorption/acer", "2026_07_01_STAGE2", 3200);
+        let row = cube_row(&h, "qprism/SpanishBCBL/stage2/cube-absorption/acer", "2026_07_01_STAGE2", 3, 3200);
         assert!(row.starts_with("QPRISMCUBE|") && row.ends_with("|json=0"));
         assert!(!row.contains('{') && !row.contains('}') && !row.contains('"')); // no JSON
+        assert!(row.contains("space_expandable=1") && row.contains("frame=3"));
+        assert!(row.contains("inject_between=bh_digital_expansion") && row.contains("bh_prefix="));
         assert!(row.contains(&format!("handle8={}", h.node8)));
         assert!(row.contains(&format!("source8={}", h.source8)));
         assert!(row.contains(&format!("tuple8={}", h.tuple8)));
@@ -176,6 +231,18 @@ mod tests {
             assert!(row.contains(g), "missing gate {g}");
         }
         assert_eq!(SELECTOR_AXES.len(), 11);
+    }
+
+    #[test]
+    fn bh_inject_is_strictly_between() {
+        // space expandable per slice: inject a pid point BETWEEN two addresses, one slice deeper
+        let a = bh_prefix("0000000000000005");
+        let b = bh_prefix("0000000000000006");
+        let c = bh_inject_between(&a, &b);
+        assert_eq!(c.len(), BH_DEPTH + 1); // deeper = the next slice
+        let pad = |v: &[u16], l: usize| { let mut w = v.to_vec(); w.resize(l, 0); bh_int(&w) };
+        let (la, lb, lc) = (pad(&a, c.len()), pad(&b, c.len()), bh_int(&c));
+        assert!(la.min(lb) < lc && lc < la.max(lb)); // strictly between
     }
 
     #[test]

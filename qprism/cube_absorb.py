@@ -67,6 +67,51 @@ def _sha16(b: bytes) -> str:
     return hashlib.sha256(b).hexdigest()[:16]
 
 
+# ---- Brown-Hilbert digital expansion: space is expandable PER SLICE (frame). ----
+# A cube's address is a 1024-ary Brown-Hilbert prefix (depth 6 = 2^60 = the 60D ceiling).
+# Between any two addresses, a NEW pid-addressable point can be INJECTED at the next depth
+# (the next slice) -- so space/time grows and points slot in-between (Brown & Fedotov, Digital
+# Physics: frame-based discrete universe, spacetime pixels, metatag-driven evolution).
+BH_RADIX = 1024
+BH_DEPTH = 6            # canonical (1024^6 = 2^60); deeper = injected-between = the next slice
+
+def bh_prefix(handle8_hex: str, depth: int = BH_DEPTH) -> list:
+    """1024-ary Brown-Hilbert prefix digits (most-significant first) from a Host-8 handle."""
+    n = int(handle8_hex, 16) % (BH_RADIX ** depth)
+    d = []
+    for _ in range(depth):
+        d.append(n % BH_RADIX); n //= BH_RADIX
+    return d[::-1]
+
+def _bh_int(digits: list) -> int:
+    n = 0
+    for x in digits:
+        n = n * BH_RADIX + x
+    return n
+
+def bh_inject_between(a: list, b: list) -> list:
+    """Inject a pid-addressable point strictly BETWEEN a and b, one slice deeper (the next
+    slice of growing space-time). Brown-Hilbert digital expansion: deepen by one level, take
+    the midpoint -- there is always room because deepening multiplies the gap by the radix."""
+    L = max(len(a), len(b)) + 1
+    A = (a + [0] * (L - len(a)))
+    B = (b + [0] * (L - len(b)))
+    ai, bi = _bh_int(A), _bh_int(B)
+    if ai > bi:
+        ai, bi = bi, ai
+    ci = (ai + bi) // 2
+    if ci <= ai:
+        ci = ai + 1
+    out = []
+    n = ci
+    for _ in range(L):
+        out.append(n % BH_RADIX); n //= BH_RADIX
+    return out[::-1]
+
+def bh_render(digits: list) -> str:
+    return ".".join(str(x) for x in digits)
+
+
 def _lanes_from_window(win: np.ndarray) -> np.ndarray:
     feat = win.mean(axis=0) if win.ndim == 2 else np.asarray(win, float).ravel()
     rng = np.random.default_rng(_PROJ_SEED)
@@ -110,6 +155,8 @@ class CubeChunk:
     room: str                    # route-cylinder-room
     colony: str                  # colony-vantage (ACER)
     slice_time: str
+    bh_prefix_str: str = ""      # Brown-Hilbert 1024-ary expandable address prefix
+    frame: int = 0               # discrete-universe frame / slice index (space expands per slice)
     raw_in_repo: int = 0
     derived_only: int = 1
     tuple_bytes: int = TUPLE_BYTES
@@ -154,6 +201,8 @@ class CubeChunk:
         # raw projection (pixels) of it — inert, no logic. Machine hot path = HBP tuple-text; JSON = cold.
         law = ("|node_runtime=kernel_contract_not_spawned|nodejs=0|json_object=0"
                "|hot_path=HBP_HBI_TUPLE_TEXT|pixels_first=1|frontend=raw_projection_inert"
+               f"|space_expandable=1|frame={f.frame}|bh_depth={BH_DEPTH}|bh_prefix={f.bh_prefix_str}"
+               "|inject_between=bh_digital_expansion"
                "|agentterms_fedenv_fire=0|dispatch=0|provider_fanout=0|hardware_fire=0"
                "|compile=0|interpret=0|fire=0")
         sel = f"|{SELECTOR_CONSTRAINT}|axis_count={len(SELECTOR_AXES)}"
@@ -164,7 +213,8 @@ class CubeChunk:
 def absorb_window(win: np.ndarray, *, dataset_id="bcbl190626/SpanishBCBL",
                   license="CC-BY-NC-4.0", subject="S?", session="?", modality="MEG",
                   window_start_s=0.0, window_dur_s=0.0, source_sha256="referenced-on-D",
-                  colony="ACER+OP_JESSE_PID+FABRIC_4944", slice_time="2026_07_01_STAGE2") -> CubeChunk:
+                  colony="ACER+OP_JESSE_PID+FABRIC_4944", slice_time="2026_07_01_STAGE2",
+                  frame=0) -> CubeChunk:
     """Represent one feature window as a bilateral-converged, graphify-V3-addressed cube node."""
     win = np.atleast_2d(win)
     tup = quant_tuple(win)
@@ -172,16 +222,18 @@ def absorb_window(win: np.ndarray, *, dataset_id="bcbl190626/SpanishBCBL",
     feat_digest = _sha16(win.astype(np.float32).tobytes())
     # canonical graphify node id (converged w/ liris): content-addressed by the quant tuple
     node_id = f"qprism_cube:{tuple8}"
+    node8 = handle8(node_id)
     topid = "HG1024:QPRISM:" + glyphword(node_id)[4:]
     ds = dataset_id.split("/")[-1]
     return CubeChunk(
-        node_id=node_id, handle8=handle8(node_id),
+        node_id=node_id, handle8=node8,
         source8=host8_from_sha256(source_sha256), tuple8=tuple8,
         glyph=glyphword(node_id), dataset_id=dataset_id, license=license, subject=subject, session=session,
         modality=modality, window_start_s=float(window_start_s), window_dur_s=float(window_dur_s),
         n_samples=int(win.shape[0]), feature_digest=feat_digest, tuple_sha16=_sha16(tup),
         source_sha256=source_sha256, topid=topid,
-        room=f"qprism/{ds}/stage2/cube-absorption/acer", colony=colony, slice_time=slice_time, tuple=tup)
+        room=f"qprism/{ds}/stage2/cube-absorption/acer", colony=colony, slice_time=slice_time,
+        bh_prefix_str=bh_render(bh_prefix(node8)), frame=frame, tuple=tup)
 
 
 def cube_to_control(chunk: CubeChunk) -> np.ndarray:

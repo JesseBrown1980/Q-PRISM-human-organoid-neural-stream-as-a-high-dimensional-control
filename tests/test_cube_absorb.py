@@ -97,3 +97,17 @@ def test_active_glyph_law_is_gated():
                  "geometry=graphify60d"):
         assert gate in law
     assert f"handle8={ch.handle8}" in law
+
+
+def test_space_expandable_inject_between():
+    from qprism.cube_absorb import bh_prefix, bh_inject_between, _bh_int, BH_DEPTH
+    a, b = bh_prefix("0000000000000005"), bh_prefix("0000000000000006")
+    c = bh_inject_between(a, b)                                   # inject one slice deeper
+    la = _bh_int(a + [0] * (len(c) - len(a)))
+    lb = _bh_int(b + [0] * (len(c) - len(b)))
+    ci = _bh_int(c)
+    assert min(la, lb) < ci < max(la, lb)                        # strictly BETWEEN (new pid point)
+    assert len(c) == BH_DEPTH + 1                                # deeper = the next slice
+    row = absorb_window(_fixture_window(), frame=3).hbp_row()
+    assert "space_expandable=1" in row and "frame=3" in row
+    assert "inject_between=bh_digital_expansion" in row and "bh_prefix=" in row

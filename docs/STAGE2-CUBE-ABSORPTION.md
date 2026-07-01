@@ -71,6 +71,23 @@ kernel (vs the Python reference here) is the operator-gated migration, not fired
 - **Phase 4 — bilateral converge:** acer 3200-byte cube ↔ Liris `qprism-quant-chunk` byte-parity;
   merge the stronger `zeta`/schema. GitHub is the mediator.
 
+## Space is expandable per slice (Brown-Hilbert digital expansion)
+Grounded in Brown & Fedotov, *Integration and Refinement of Digital Physics* (Dec 2024):
+a **frame-based discrete universe** of **spacetime pixels**, evolving by **metatags**; and the
+**Metatagging-data-for-a-Quantum-universe** vectorspace doc (temporal/interaction-driven expansion).
+
+A cube's address is not a fixed point — it is a **1024-ary Brown-Hilbert prefix** (depth 6 = 2⁶⁰,
+the 60D ceiling). **Space expands per slice (frame):** between any two addresses, a new
+pid-addressable point can be **injected one slice deeper** (`bh_inject_between` → midpoint at
+depth+1; there is always room because deepening multiplies the gap by 1024). So as space/time grows
+to the next slice, points slot in **between** existing ones. The row carries:
+`space_expandable=1 | frame=N | bh_depth=6 | bh_prefix=d0.d1…d5 | inject_between=bh_digital_expansion`.
+
+Honest tag: this is **addressing capacity** — the address form is expandable and points are
+*injectable*; it does not materialize infinite points. Materializing an expanded slice is
+operator-gated (E=0). (`pixels_first` traces to the paper's spacetime-pixels; the frontend only
+projects that discrete pixel substrate.)
+
 ## Gates
 - **No raw M/EEG in git.** `raw_in_repo=0`, `derived_only=1` on every chunk; raw stays on D:, sha-referenced.
 - **License:** CC-BY-NC-4.0 — research/non-commercial only.
