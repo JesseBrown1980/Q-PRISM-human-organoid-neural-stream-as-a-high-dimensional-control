@@ -52,7 +52,7 @@ Paper identified from local PDF text:
 Why it matters for Q-PRISM:
 
 - This is the physical target class.
-- Q-PRISM schedules lawful controls around a matter-wave interferometer: phase, timing, power, velocity-bin selection, scan order, and analysis windows.
+- Q-PRISM schedules lawful controls around a spatial Talbot-Lau matter-wave interferometer: middle-grating power, velocity-bin selection, mass-bin selection, scan order, flux/SNR, and Talbot `rho`.
 - The Nature result does not imply consciousness coupling. It gives a sensitive experimental platform where schedule quality can be tested.
 
 ## 3. Asolaria local-first self-refining substrate
@@ -103,3 +103,18 @@ The branch-comparison harness should evaluate Acer and Liris branches by this sp
 2. Does it respect the Nature interferometer physics boundary?
 3. Does it use Asolaria-style compact receipts and claim gates without overclaiming?
 4. Does it improve measurable outcomes?
+## Liris Implementation Update — 2026-07-01
+
+The Liris branch corrected the first simulator from a generic toy phase model to a dependency-free spatial near-field Talbot-Lau scaffold. It is calibrated to the Nature operating point only:
+
+```text
+d=133 nm, L=0.983 m, v=160 m/s, m=172 kDa, P2=15.2 mW -> V ~= 0.10
+```
+
+Current self-validation result:
+
+```text
+QPRISM_COUPLING_SWEEP|schema=qprism.coupling_sweep.v1|seeds=24|steps=32|self_validation=PASS|zero_delta=-0.029946|high_delta=0.028933|physics=spatial_talbot_lau_one_point_calibrated|evidence=MEASURED_SIM|json=0
+```
+
+This is the branch-comparison baseline for Acer/Liris review: pure-noise prism must lose, high-coupling prism may win, and both remain simulator-level until hardware evidence exists.

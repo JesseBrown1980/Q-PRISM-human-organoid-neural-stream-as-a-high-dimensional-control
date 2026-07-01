@@ -16,11 +16,31 @@ It asks a sharper experimental question:
 
 > Can a prismed neural or organoid-derived stream improve prediction, control, anomaly discovery, or schedule selection in macroscopic quantum-interference experiments beyond random, classical ML, and human-only baselines?
 
+## Current Liris Simulator
+
+The simulator is now a dependency-free spatial near-field Talbot-Lau scaffold calibrated to the Nature apparatus at one operating point.
+
+Measured anchor from the paper/PDF extraction:
+
+- grating period `d = 133 nm` from 266 nm UV gratings
+- grating separation `L = 0.983 m`
+- sodium cluster mean mass about `172 kDa`
+- beam velocity about `160 m/s`
+- reported visibility `V = 0.10 +/- 0.01` at `P2 = 15.2 mW`
+
+The model uses the spatial Talbot ratio
+
+```text
+rho = L / L_T = L * h / (d^2 * m * v)
+```
+
+so the lawful controls are middle-grating power, velocity-window selection, mass-window selection, and analysis schedule. It is `MEASURED_SIM_ONE_POINT_CALIBRATION`, not a hardware result.
+
 ## Layers
 
 1. **Physics layer**
-   - Models a sodium nanoparticle interferometer.
-   - Exposes lawful control channels: grating phase, laser power, velocity-bin selection, scan schedule, decoherence assumptions, detector analysis.
+   - Models the sodium nanoparticle spatial Talbot-Lau regime.
+   - Exposes lawful control channels: G2 laser power, velocity-bin selection, mass-bin selection, flux, SNR, Talbot `rho`, and fringe visibility.
 
 2. **Prism layer**
    - Converts neural/semantic/time-series input into high-dimensional control proposals.
@@ -29,9 +49,9 @@ It asks a sharper experimental question:
 3. **Experiment layer**
    - Runs blinded schedule comparisons:
      - random control
-     - classical optimizer
+     - classical scan optimizer
      - Q-PRISM neural/prism schedule
-   - Scores visibility, phase prediction, anomaly detection, and reproducibility.
+   - Runs a coupling sweep: pure-noise prism must lose, high-coupling prism must win before the harness calls the signal useful.
 
 4. **Claims gate**
    - A positive result may support: `neural-prism signal improves experimental control`.
@@ -42,18 +62,26 @@ It asks a sharper experimental question:
 ```powershell
 npm test
 npm run simulate
+npm run compare
 ```
 
-The first simulator is intentionally small and dependency-free. It is a scaffold for the actual hardware-facing protocol, not a substitute for the real experiment.
+Current measured simulator output on the Liris branch:
+
+```text
+operating_point_visibility=0.09999 target=0.10 evidence=MEASURED_SIM_ONE_POINT_CALIBRATION
+QPRISM_COUPLING_SWEEP|schema=qprism.coupling_sweep.v1|seeds=24|steps=32|self_validation=PASS|zero_delta=-0.029946|high_delta=0.028933|physics=spatial_talbot_lau_one_point_calibrated|evidence=MEASURED_SIM|json=0
+```
 
 ## Repository Map
 
 - `docs/source-triad.md` - how ComPilot, Nature 2026, and the Asolaria report fit together.
+- `docs/spatial-talbot-lau-calibration.md` - the calibrated simulator boundary.
 - `docs/nature-2026-metal-cluster-interferometry.md` - physics anchor.
 - `docs/research-program.md` - staged Q-PRISM roadmap.
 - `docs/claims-gate.md` - what can and cannot be claimed.
 - `docs/ethics-and-human-subjects.md` - consent and safety gates.
-- `src/qprism-simulator.mjs` - dependency-free interferometer toy model.
+- `src/qprism-simulator.mjs` - dependency-free spatial Talbot-Lau simulator scaffold.
 - `src/qprism-control-policy.mjs` - deterministic schedule/control proposal utilities.
-- `test/qprism-smoke.test.mjs` - smoke tests for the scaffold.
-
+- `src/qprism-experiment.mjs` - comparison and coupling-sweep harness.
+- `test/qprism-smoke.test.mjs` - physics and policy smoke tests.
+- `test/qprism-experiment.test.mjs` - comparison and self-validation tests.
