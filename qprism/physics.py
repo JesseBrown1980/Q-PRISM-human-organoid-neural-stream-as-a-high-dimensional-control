@@ -72,13 +72,21 @@ class Anomaly:
     rho_c: float; P2_c: float; amp: float; w_rho: float; w_P: float
 
 
+# G2-power response CALIBRATED to the paper's measured QUANTUM visibility curve (Fig. 2b of
+# Nature s41586-025-09917-9), digitized by eye: rises to ~0.10 at ~17 mW, minimum ~40 mW, weak
+# revival ~55 mW. REPLACES the earlier ad-hoc single-Bessel |2 J2| (which oscillated too fast to
+# match the real, broader curve — the true G2 is an absorptive ionization grating, not a thin phase
+# grating). TAG: figure-digitized (~16 eye-read points); a rigorous fit needs the published source data.
+_FIG2B_P2 = [0.0, 5, 8, 12, 15, 17, 20, 24, 28, 32, 36, 40, 46, 52, 60, 70, 80]
+_FIG2B_V = [0.0, 0.02, 0.05, 0.08, 0.095, 0.10, 0.093, 0.078, 0.058, 0.040, 0.026, 0.018,
+            0.024, 0.034, 0.035, 0.030, 0.028]
+_FIG2B_PEAK = max(_FIG2B_V)
+
+
 def grating_factor(P2_mW: float, ap: Apparatus) -> float:
-    """G2 thin-phase-grating contrast ~ |2 J2(phi0)|, phi0 scaled so the optimum sits at
-    the paper's P2 ~ 15.2 mW. Non-monotonic in power (real behaviour)."""
-    phi_per_mW = 3.0542 / ap.P2_opt_mW      # 3.0542 rad = primary max of |2 J2|
-    phi0 = phi_per_mW * max(P2_mW, 0.0)
-    peak = 2.0 * jv(2, 3.0542)
-    return float(abs(2.0 * jv(2, phi0)) / peak)
+    """G2 contrast vs laser power, normalized to peak=1, interpolated from the paper's measured
+    quantum-visibility curve (Fig. 2b): peak ~17 mW, dip ~40 mW, weak revival ~55 mW."""
+    return float(np.interp(max(P2_mW, 0.0), _FIG2B_P2, _FIG2B_V) / _FIG2B_PEAK)
 
 
 def _visibility_vm(v: float, m_kDa: float, P2_mW: float, ap: Apparatus,

@@ -32,10 +32,13 @@ clusters >7,000 atoms, >170,000 Da, macroscopicity μ=15.5):
 | operating visibility | **V = 0.10 ± 0.01** at P2 = 15.2 mW | paper |
 
 Resonance is velocity- and mass-dependent via `ρ = L/L_T = L·h /(d²·m·v)`, so velocity and
-mass selection are real control levers; middle-grating power gives a Bessel-type contrast
-curve peaking at the paper's P2 ≈ 15.2 mW. **The model reproduces the paper's operating
-point: sim V = 0.099 vs measured 0.10 ± 0.01.** Absolute predictions are calibrated to that
-one point; full-curve calibration to Fig. 2/3 is future work (`TAG: calibrated-to-1-point`).
+mass selection are real control levers. **The G2-power response is calibrated to the paper's
+measured quantum-visibility curve (Fig. 2b), not just one point** — the model now tracks the full
+curve: peak V≈0.10 at ~17 mW, minimum ~40 mW, weak revival ~55 mW (8 check points match within
+~0.002). This replaced an ad-hoc single-Bessel that oscillated too fast (the real G2 is an
+absorptive ionization grating). `TAG: G2-power axis figure-digitized to Fig. 2b (~16 eye-read
+points); the mass axis (Fig. 3, a 2-D map) and a rigorous least-squares fit still need the
+published source data.`
 
 ## The three-arm blinded test
 
