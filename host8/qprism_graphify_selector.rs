@@ -67,6 +67,8 @@ pub const SELECTOR_CONSTRAINT: &str = "selector_constraint:hyperbehcs-selector-r
 pub const HOT_PATH: &str = "HBP_HBI_TUPLE_TEXT";
 pub const FRONTEND_PROJECTION: &str = "raw_projection_inert";
 pub const SPACE_EXPANSION_RULE: &str = "brown_hilbert_slice_expansion_pid_injection";
+pub const BH_RADIX: u64 = 1024;
+pub const BH_DEPTH: usize = 6;
 
 pub const SELECTOR_AXES: [&str; 11] = [
     "selector_axis:d-axis-tuples",
@@ -92,6 +94,65 @@ pub struct QPrismCubeSelector {
     pub agentterms_fedenv_fire: bool,
 }
 
+pub fn bh_prefix_from_host8(handle: Host8) -> [u16; BH_DEPTH] {
+    let mut n = u64::from_be_bytes(handle.0) % BH_RADIX.pow(BH_DEPTH as u32);
+    let mut out = [0u16; BH_DEPTH];
+    let mut i = BH_DEPTH;
+    while i > 0 {
+        i -= 1;
+        out[i] = (n % BH_RADIX) as u16;
+        n /= BH_RADIX;
+    }
+    out
+}
+
+fn bh_int(digits: &[u16]) -> u128 {
+    let mut n = 0u128;
+    for d in digits {
+        n = n * BH_RADIX as u128 + *d as u128;
+    }
+    n
+}
+
+pub fn bh_inject_between(a: &[u16], b: &[u16]) -> Vec<u16> {
+    let depth = a.len().max(b.len()) + 1;
+    let mut aa = a.to_vec();
+    let mut bb = b.to_vec();
+    aa.resize(depth, 0);
+    bb.resize(depth, 0);
+
+    let mut ai = bh_int(&aa);
+    let mut bi = bh_int(&bb);
+    if ai > bi {
+        core::mem::swap(&mut ai, &mut bi);
+    }
+
+    let mut mid = (ai + bi) / 2;
+    if mid <= ai {
+        mid = ai + 1;
+    }
+
+    let mut out = vec![0u16; depth];
+    let mut i = depth;
+    while i > 0 {
+        i -= 1;
+        out[i] = (mid % BH_RADIX as u128) as u16;
+        mid /= BH_RADIX as u128;
+    }
+    out
+}
+
+pub fn bh_render(digits: &[u16]) -> String {
+    let mut s = String::new();
+    for (i, d) in digits.iter().enumerate() {
+        if i > 0 {
+            s.push('.');
+        }
+        s.push_str(&d.to_string());
+    }
+    s
+}
+
 impl QPrismCubeSelector {
     pub fn new(source_sha256: &str, tuple_sha256: &str) -> Result<Self, &'static str> {
         let source = Host8::from_sha256_prefix(source_sha256)?;
@@ -115,9 +176,10 @@ impl QPrismCubeSelector {
     }
 
     pub fn space_expansion_row(&self, slice_from: u64, slice_to: u64) -> String {
+        let prefix = bh_render(&bh_prefix_from_host8(self.node));
         format!(
-            "QPRISMSPACEEXPAND|handle8={}|graphify_id={}|rule={}|slice_from={}|slice_to={}|inject_between=space_time_next_slice|pid_addressable_points=1|backend=representation_cube|frontend=raw_projection_inert|compile=0|interpret=0|fire=0|json=0",
-            self.node_hex16(), self.graphify_id, SPACE_EXPANSION_RULE, slice_from, slice_to
+            "QPRISMSPACEEXPAND|handle8={}|graphify_id={}|rule={}|frame_model=Fn|transition=Fn_to_Fn_plus_1|slice_from={}|slice_to={}|spacetime_pixels=1|metatag=host8_descriptor|bh_radix={}|bh_depth={}|bh_prefix={}|inject_between=bh_digital_expansion_space_time_next_slice|pid_addressable_points=1|backend=representation_cube|frontend=raw_projection_inert|compile=0|interpret=0|fire=0|json=0",
+            self.node_hex16(), self.graphify_id, SPACE_EXPANSION_RULE, slice_from, slice_to, BH_RADIX, BH_DEPTH, prefix
         )
     }
 
@@ -157,8 +219,18 @@ mod tests {
         assert_eq!(sel.graphify_id, "qprism_cube:7be9d49b3af31036");
         assert!(sel.law_row().contains("|hot_path=HBP_HBI_TUPLE_TEXT|pixels_first=1|frontend=raw_projection_inert|"));
         assert_eq!(sel.node_hex16(), "5edd3a45544437d4");
-        assert!(sel.space_expansion_row(0, 1).contains("|rule=brown_hilbert_slice_expansion_pid_injection|"));
-        assert!(sel.space_expansion_row(0, 1).contains("|inject_between=space_time_next_slice|pid_addressable_points=1|"));
+
+        let prefix = bh_prefix_from_host8(sel.node);
+        let injected = bh_inject_between(&prefix, &bh_prefix_from_host8(sel.tuple));
+        assert_eq!(prefix.len(), BH_DEPTH);
+        assert_eq!(injected.len(), BH_DEPTH + 1);
+
+        let expansion = sel.space_expansion_row(0, 1);
+        assert!(expansion.contains("|rule=brown_hilbert_slice_expansion_pid_injection|"));
+        assert!(expansion.contains("|frame_model=Fn|transition=Fn_to_Fn_plus_1|"));
+        assert!(expansion.contains("|spacetime_pixels=1|metatag=host8_descriptor|"));
+        assert!(expansion.contains("|inject_between=bh_digital_expansion_space_time_next_slice|pid_addressable_points=1|"));
+        assert!(expansion.contains("|bh_radix=1024|bh_depth=6|bh_prefix="));
         assert!(!sel.raw_in_repo);
         assert!(!sel.execution_allowed());
     }
