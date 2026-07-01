@@ -66,6 +66,7 @@ pub const GRAPHIFY_FRAME: &str = "60D_PLUS_HYPERBEHCS";
 pub const SELECTOR_CONSTRAINT: &str = "selector_constraint:hyperbehcs-selector-router-60d";
 pub const HOT_PATH: &str = "HBP_HBI_TUPLE_TEXT";
 pub const FRONTEND_PROJECTION: &str = "raw_projection_inert";
+pub const SPACE_EXPANSION_RULE: &str = "brown_hilbert_slice_expansion_pid_injection";
 
 pub const SELECTOR_AXES: [&str; 11] = [
     "selector_axis:d-axis-tuples",
@@ -113,6 +114,13 @@ impl QPrismCubeSelector {
         )
     }
 
+    pub fn space_expansion_row(&self, slice_from: u64, slice_to: u64) -> String {
+        format!(
+            "QPRISMSPACEEXPAND|handle8={}|graphify_id={}|rule={}|slice_from={}|slice_to={}|inject_between=space_time_next_slice|pid_addressable_points=1|backend=representation_cube|frontend=raw_projection_inert|compile=0|interpret=0|fire=0|json=0",
+            self.node_hex16(), self.graphify_id, SPACE_EXPANSION_RULE, slice_from, slice_to
+        )
+    }
+
     pub fn active_glyph_row(&self) -> String {
         format!(
             "QPRISMACTIVEGLYPH|handle8={}|geometry=graphify60d|behavior=represent_address|compile=0|interpret=0|fire=0|json=0",
@@ -149,6 +157,8 @@ mod tests {
         assert_eq!(sel.graphify_id, "qprism_cube:7be9d49b3af31036");
         assert!(sel.law_row().contains("|hot_path=HBP_HBI_TUPLE_TEXT|pixels_first=1|frontend=raw_projection_inert|"));
         assert_eq!(sel.node_hex16(), "5edd3a45544437d4");
+        assert!(sel.space_expansion_row(0, 1).contains("|rule=brown_hilbert_slice_expansion_pid_injection|"));
+        assert!(sel.space_expansion_row(0, 1).contains("|inject_between=space_time_next_slice|pid_addressable_points=1|"));
         assert!(!sel.raw_in_repo);
         assert!(!sel.execution_allowed());
     }

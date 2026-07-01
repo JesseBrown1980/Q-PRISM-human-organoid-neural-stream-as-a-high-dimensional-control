@@ -18,3 +18,4 @@ QPRISMGRAPHIFYAXIS|axis=selector_axis:colony-vantage|value=LIRIS+OP_RAYSSA_PID+F
 QPRISMGRAPHIFYAXIS|axis=selector_axis:slice-time|value=2026_07_01_STAGE2_SELECTOR_ALIGNMENT|json=0
 QPRISMGRAPHIFYAXIS|axis=selector_axis:binary-hash-hex-crypto|value=source_handle8+tuple_handle8+node_handle8+sha256_reference|json=0
 QPRISMACTIVEGLYPH|handle8=HOST8_NODE_PK_FNV1A64|geometry=graphify60d|behavior=represent_address|compile=0|interpret=0|fire=0|json=0
+QPRISMSPACEEXPAND|handle8=HOST8_NODE_PK_FNV1A64|graphify_id=qprism_cube:TUPLE8|rule=brown_hilbert_slice_expansion_pid_injection|slice_from=N|slice_to=N_PLUS_1|inject_between=space_time_next_slice|pid_addressable_points=1|backend=representation_cube|frontend=raw_projection_inert|compile=0|interpret=0|fire=0|json=0
