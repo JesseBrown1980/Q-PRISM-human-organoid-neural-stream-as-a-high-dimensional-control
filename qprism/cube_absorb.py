@@ -1,26 +1,25 @@
 """Cube absorption — represent a neural feature window as a KERNEL-NATIVE, fabric-addressable
-cube node (json=0, Host-8 8-byte handle, graphify-60D selector envelope).
+cube node (json=0, Host-8 8-byte handles, graphify-V3 60D selector envelope).
 
-"The fabric absorbs anything by representing it -> cube." Made concrete for Q-PRISM Stage 2,
-in the metal-kernel form (NOT Node, NOT JSON as the carrier):
+"The fabric absorbs anything by representing it -> cube." Kernel-native form (NOT Node, NOT JSON):
 
-  raw M/EEG (stays on D:, referenced by sha256)
+  raw M/EEG (D:, referenced by sha256)
     -> derived feature window
     -> canonical 3200-byte QUANT TUPLE  (turbo 1024*int8 + signs 128 + zeta 1024 + hist 256*u32)
-    -> KERNEL-NATIVE cube node: handle8 (FNV1a64 Host-8 PK) + glyph + 60D selector envelope
-    -> json=0 HBP tuple row  (pipe-delimited; JSON only as cold debug per the HyperBEHCS adapter rule)
-    -> CubeSource -> prism arm
+    -> KERNEL-NATIVE cube node: 3 Host-8 handles + glyph + graphify-V3 11-axis selector envelope
+    -> json=0 HBP tuple row -> CubeSource -> prism arm
 
-Node identity is BYTE-IDENTICAL to acer `tools/graphify/graphify.py` (`handle8`, `glyphword`),
-so each cube is a node in the SAME 60D atlas graph both colonies use. Selector axes follow the
-graphify `sel:*` envelope: room(D37) · handle8(D16) · to_pid[60-tuple](D16) · PortLabel(D13) ·
-domain[1/8](D37) · tier[1/6](D37) · executor(D1) · signgate(D11) · runtime/E-axis(D12).
+BILATERAL-CONVERGED contract (acer + liris, GitHub-mediated):
+  * node handle8 = FNV1a64(node_id)      -- graphify NODE PK, byte-identical to graphify.py (verified)
+  * source8      = sha256(source)[:8]     -- content/provenance handle (adopted from liris)
+  * tuple8       = sha256(tuple)[:8]       -- content/provenance handle (adopted from liris)
+  * selector     = graphify-V3 ASOLARIA-GRAPHIFY-V3-HYPERBEHCS-60D, 11 `selector_axis:*`
+                   + selector_constraint:hyperbehcs-selector-router-60d   (canonical, from live :4790)
 
-HONESTY: this delivers the kernel-native FORMAT (handle8 PK, json=0, graphify-60D node) so a cube
-BINDS to the Rust 8-byte Host-8 metal kernel. Actually EXECUTING the quant ON the metal kernel is
-the operator-gated migration — not fired here. runtime axis = `staged`, E=0. Representation only:
-uses fabric/recall/atlas/graphify as read surfaces; never fires AgentTerms/FEDENV. Raw is preserved
-by sha256 (referenced), never reconstructed from the tuple, never stored in the repo.
+HONESTY: delivers the kernel-native FORMAT (binds to the Rust 8-byte Host-8 metal kernel by handle).
+Executing the quant ON the metal kernel is the operator-gated migration -- not fired: runtime cold,
+compile=0/interpret=0/fire=0, E=0. Representation only: fabric/recall/atlas/graphify as read surfaces;
+never fires AgentTerms/FEDENV. Raw preserved by sha256 (referenced), never reconstructed, never in repo.
 """
 from __future__ import annotations
 from dataclasses import dataclass, field
@@ -28,10 +27,15 @@ import hashlib
 import numpy as np
 from .neural_sources import NeuralSource, _sigmoid
 
-TUPLE_BYTES = 3200            # turbo 1024 + signs 128 + zeta 1024 + hist 1024
+TUPLE_BYTES = 3200
 LANES = 1024
-_PROJ_SEED = 51966           # fixed projection seed (deterministic lanes)
+_PROJ_SEED = 51966
 _B62 = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+GRAPHIFY_SCHEMA = "ASOLARIA-GRAPHIFY-V3-HYPERBEHCS-60D"
+SELECTOR_CONSTRAINT = "selector_constraint:hyperbehcs-selector-router-60d"
+SELECTOR_AXES = ("d-axis-tuples", "glyph-family", "executor-program", "pipe-type",
+                 "operation-class", "route-cylinder-room", "proof-tier", "runtime-mode",
+                 "colony-vantage", "slice-time", "binary-hash-hex-crypto")
 
 
 def glyphword(s: str) -> str:
@@ -48,6 +52,15 @@ def handle8(s: str) -> str:
     for ch in s.encode():
         h = ((h ^ ch) * 0x100000001b3) & 0xffffffffffffffff
     return format(h, "016x")
+
+
+def host8_from_sha256(hex_or_str: str) -> str:
+    """8-byte content handle from a sha256 hex prefix (liris `from_sha256_prefix`).
+    If given a full sha256 hex, take the first 16 chars; otherwise sha256 the string first."""
+    h = hex_or_str.strip().lower()
+    if len(h) >= 16 and all(c in "0123456789abcdef" for c in h[:16]):
+        return h[:16]
+    return hashlib.sha256(hex_or_str.encode()).hexdigest()[:16]
 
 
 def _sha16(b: bytes) -> str:
@@ -78,8 +91,10 @@ def quant_tuple(win: np.ndarray) -> bytes:
 @dataclass
 class CubeChunk:
     node_id: str
-    handle8: str                 # FNV1a64 Host-8 8-byte primary key
-    glyph: str                   # deterministic baseN glyph id (graphify parity)
+    handle8: str                 # node PK: FNV1a64(node_id) (graphify parity)
+    source8: str                 # content handle: sha256(source)[:8]
+    tuple8: str                  # content handle: sha256(tuple)[:8]
+    glyph: str
     dataset_id: str
     license: str
     subject: str
@@ -90,65 +105,83 @@ class CubeChunk:
     n_samples: int
     feature_digest: str
     tuple_sha16: str
-    source_sha256: str           # RAW recording -> referenced, never stored
-    sel_room: str                # D37 room_stub
-    sel_topid: str               # D16 to_pid [60-tuple] (BEHCS-1024 glyph address)
-    sel_portlabel: str           # D13 PortLabel prefix
-    sel_domain: str              # D37 atlas-domain [1/8]
-    sel_tier: str                # D37 access-tier [1/6]
-    sel_executor: str            # D1  EXECUTED_BY
-    sel_signgate: str            # D11 sign-gate verdict + cosign-seq
-    sel_runtime: str             # D12 runtime/E-axis frozen->staged->live->cutover
+    source_sha256: str
+    topid: str                   # HG1024:QPRISM glyph address (D16 to_pid 60-tuple)
+    room: str                    # route-cylinder-room
+    colony: str                  # colony-vantage (ACER)
+    slice_time: str
     raw_in_repo: int = 0
     derived_only: int = 1
     tuple_bytes: int = TUPLE_BYTES
     tuple: bytes = field(default=b"", repr=False)
 
+    def axis_values(self) -> dict:
+        """graphify-V3 11-axis selector values (acer vantage)."""
+        return {
+            "d-axis-tuples": "D22_TRANSLATION+D48_HYPERGLYPH_ATLAS+D49_EXECUTION_PROOF_SUPERGRAPH+60D_SELECTOR_FRAME",
+            "glyph-family": f"BEHCS_1024+{self.topid}+HBP_HBI_TUPLE_TEXT",
+            "executor-program": "NONE_REPRESENTATION_ONLY_AGENTTERMS_FEDENV_NOT_FIRED",
+            "pipe-type": "DERIVED_FEATURE_CUBE+QUANT8_3200_BYTE_TUPLE+HBP_HBI_TUPLE_TEXT",
+            "operation-class": "REPRESENT_ADDRESS_DERIVE_DIGEST",
+            "route-cylinder-room": self.room,
+            "proof-tier": "MEASURED_LOCAL_DERIVED+RAW_IN_REPO_0+DISPATCH_OPERATOR_GATED",
+            "runtime-mode": "COLD_DERIVED_READ_REPRESENTATION_MAP_FIRE_0",
+            "colony-vantage": self.colony,
+            "slice-time": self.slice_time,
+            "binary-hash-hex-crypto": f"source8:{self.source8}+tuple8:{self.tuple8}+node8:{self.handle8}+sha256_reference",
+        }
+
     def active_glyph_law(self) -> str:
         """CARET design-lens, gated: the glyph's address/geometry IS a behavior *descriptor*
-        (active symbolic geometry) -- but it is representation-only. behavior=represent_address;
-        compile=0/interpret=0/fire=0. Execution stays operator-gated on the metal kernel.
-        The 'alien' provenance is a disputed/hoax artifact and stays outside the gate; only the
-        'geometry as addressable behavior' idea is imported. Bilateral parity with liris."""
+        (active symbolic geometry) -- but representation-only. Execution stays operator-gated.
+        The disputed/hoax 'alien' provenance stays outside the gate. Bilateral parity with liris."""
         return ("QPRISMACTIVEGLYPH"
                 f"|handle8={self.handle8}|geometry=graphify60d|behavior=represent_address"
                 f"|compile=0|interpret=0|fire=0|json=0")
 
     def hbp_row(self) -> str:
-        """json=0 kernel-native tuple row (the primary carrier). No JSON."""
+        """Bilateral-converged json=0 kernel-native cube row (the primary carrier). No JSON."""
         f = self
-        return ("QPRISMCUBE"
-                f"|handle8={f.handle8}|glyph={f.glyph}|node={f.node_id}"
+        head = ("QPRISMCUBE"
+                f"|schema=qprism.host8.graphify_selector.v1|graphify_schema={GRAPHIFY_SCHEMA}"
+                f"|handle8={f.handle8}|source8={f.source8}|tuple8={f.tuple8}|glyph={f.glyph}|node={f.node_id}"
                 f"|dataset={f.dataset_id}|license={f.license}"
                 f"|subject={f.subject}|session={f.session}|modality={f.modality}"
                 f"|win_start_s={f.window_start_s}|win_dur_s={f.window_dur_s}|n_samples={f.n_samples}"
                 f"|feat_sha16={f.feature_digest}|tuple_sha16={f.tuple_sha16}|tuple_bytes={f.tuple_bytes}"
-                f"|source_sha256={f.source_sha256}"
-                f"|sel_room={f.sel_room}|sel_topid={f.sel_topid}|sel_portlabel={f.sel_portlabel}"
-                f"|sel_domain={f.sel_domain}|sel_tier={f.sel_tier}|sel_executor={f.sel_executor}"
-                f"|sel_signgate={f.sel_signgate}|sel_runtime={f.sel_runtime}"
-                f"|raw_in_repo={f.raw_in_repo}|derived_only={f.derived_only}|json=0")
+                f"|source_sha256={f.source_sha256}")
+        # Jesse's pixels-first: the backend cube IS the representation; the frontend is only a
+        # raw projection (pixels) of it — inert, no logic. Machine hot path = HBP tuple-text; JSON = cold.
+        law = ("|node_runtime=kernel_contract_not_spawned|nodejs=0|json_object=0"
+               "|hot_path=HBP_HBI_TUPLE_TEXT|pixels_first=1|frontend=raw_projection_inert"
+               "|agentterms_fedenv_fire=0|dispatch=0|provider_fanout=0|hardware_fire=0"
+               "|compile=0|interpret=0|fire=0")
+        sel = f"|{SELECTOR_CONSTRAINT}|axis_count={len(SELECTOR_AXES)}"
+        axes = "".join(f"|selector_axis:{a}={v}" for a, v in f.axis_values().items())
+        return head + law + sel + axes + f"|raw_in_repo={f.raw_in_repo}|derived_only={f.derived_only}|json=0"
 
 
 def absorb_window(win: np.ndarray, *, dataset_id="bcbl190626/SpanishBCBL",
                   license="CC-BY-NC-4.0", subject="S?", session="?", modality="MEG",
-                  window_start_s=0.0, window_dur_s=0.0,
-                  source_sha256="referenced-on-D") -> CubeChunk:
-    """Represent one feature window as a kernel-native, graphify-60D-addressed cube node."""
+                  window_start_s=0.0, window_dur_s=0.0, source_sha256="referenced-on-D",
+                  colony="ACER+OP_JESSE_PID+FABRIC_4944", slice_time="2026_07_01_STAGE2") -> CubeChunk:
+    """Represent one feature window as a bilateral-converged, graphify-V3-addressed cube node."""
     win = np.atleast_2d(win)
     tup = quant_tuple(win)
+    tuple8 = host8_from_sha256(hashlib.sha256(tup).hexdigest())
     feat_digest = _sha16(win.astype(np.float32).tobytes())
-    node_id = f"qprism/cube/{dataset_id}/{subject}/{session}/{round(float(window_start_s),3)}/{feat_digest}"
-    topid = "HG1024:QPRISM:" + glyphword(node_id)[4:]           # 60-tuple to_pid (glyph address)
+    # canonical graphify node id (converged w/ liris): content-addressed by the quant tuple
+    node_id = f"qprism_cube:{tuple8}"
+    topid = "HG1024:QPRISM:" + glyphword(node_id)[4:]
+    ds = dataset_id.split("/")[-1]
     return CubeChunk(
-        node_id=node_id, handle8=handle8(node_id), glyph=glyphword(node_id),
-        dataset_id=dataset_id, license=license, subject=subject, session=session, modality=modality,
-        window_start_s=float(window_start_s), window_dur_s=float(window_dur_s), n_samples=int(win.shape[0]),
-        feature_digest=feat_digest, tuple_sha16=_sha16(tup), source_sha256=source_sha256,
-        sel_room=f"qprism/{dataset_id.split('/')[-1]}/{subject}", sel_topid=topid,
-        sel_portlabel="qprism.cube", sel_domain="vector", sel_tier="RESTRICTED",
-        sel_executor="host8.quant.cube-absorb", sel_signgate="UNSIGNED", sel_runtime="staged",
-        tuple=tup)
+        node_id=node_id, handle8=handle8(node_id),
+        source8=host8_from_sha256(source_sha256), tuple8=tuple8,
+        glyph=glyphword(node_id), dataset_id=dataset_id, license=license, subject=subject, session=session,
+        modality=modality, window_start_s=float(window_start_s), window_dur_s=float(window_dur_s),
+        n_samples=int(win.shape[0]), feature_digest=feat_digest, tuple_sha16=_sha16(tup),
+        source_sha256=source_sha256, topid=topid,
+        room=f"qprism/{ds}/stage2/cube-absorption/acer", colony=colony, slice_time=slice_time, tuple=tup)
 
 
 def cube_to_control(chunk: CubeChunk) -> np.ndarray:

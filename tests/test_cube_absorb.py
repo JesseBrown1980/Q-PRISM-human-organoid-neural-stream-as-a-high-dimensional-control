@@ -28,18 +28,40 @@ def test_handle8_matches_graphify_fnv1a64():
     assert glyphword("a").startswith("gly-")
 
 
-def test_hbp_row_is_json0_and_kernel_native():
+def test_hbp_row_is_json0_v3_converged():
+    from qprism.cube_absorb import SELECTOR_AXES
     ch = absorb_window(_fixture_window(), subject="S5", session="1", window_start_s=12.5)
     row = ch.hbp_row()
     assert row.startswith("QPRISMCUBE|") and row.endswith("|json=0")
-    assert "{" not in row and "}" not in row and '"' not in row     # no JSON carrier
-    assert f"handle8={ch.handle8}" in row and len(ch.handle8) == 16  # Host-8 8-byte PK present
+    assert "{" not in row and "}" not in row and '"' not in row          # no JSON carrier
+    # three Host-8 handles: node PK (FNV1a64) + two sha256-prefix content handles (liris)
+    for h in (ch.handle8, ch.source8, ch.tuple8):
+        assert len(h) == 16
+    assert ch.handle8 != ch.source8 and ch.handle8 != ch.tuple8          # distinct derivations
+    assert f"handle8={ch.handle8}" in row and f"source8={ch.source8}" in row and f"tuple8={ch.tuple8}" in row
+    # graphify-V3 schema + canonical 11-axis vocabulary
+    assert "graphify_schema=ASOLARIA-GRAPHIFY-V3-HYPERBEHCS-60D" in row
+    assert "selector_constraint:hyperbehcs-selector-router-60d" in row and "axis_count=11" in row
+    for a in SELECTOR_AXES:
+        assert f"|selector_axis:{a}=" in row
+    # gated laws (representation-only, E=0)
+    for law in ("compile=0", "interpret=0", "fire=0", "agentterms_fedenv_fire=0", "dispatch=0", "nodejs=0"):
+        assert law in row
     assert "raw_in_repo=0" in row and "derived_only=1" in row
-    # graphify-60D selector envelope axes present
-    for axis in ("sel_room", "sel_topid", "sel_portlabel", "sel_domain", "sel_tier",
-                 "sel_executor", "sel_signgate", "sel_runtime"):
-        assert f"|{axis}=" in row
-    assert "sel_runtime=staged" in row and "sel_signgate=UNSIGNED" in row  # E=0, uncosigned
+
+
+def test_source8_is_sha256_prefix_and_node_is_fnv():
+    from qprism.cube_absorb import handle8
+    ch = absorb_window(_fixture_window(), source_sha256="a" * 64)
+    assert ch.source8 == "a" * 16                                        # sha256 prefix content handle
+    assert ch.node_id == f"qprism_cube:{ch.tuple8}"                      # canonical content-addressed node id
+    assert ch.handle8 == handle8(ch.node_id)                             # node PK = FNV1a64(id) (graphify)
+
+
+def test_cross_colony_node_pk_parity():
+    # both colonies: tuple8=7be9d49b3af31036 -> node PK 5edd3a45544437d4
+    from qprism.cube_absorb import handle8
+    assert handle8("qprism_cube:7be9d49b3af31036") == "5edd3a45544437d4"
 
 
 def test_deterministic():

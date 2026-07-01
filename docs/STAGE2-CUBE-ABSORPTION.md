@@ -5,10 +5,20 @@ the 60D BEHCS-1024 tuple space — and the addressed representation **is** the c
 represent + address + derived-digest, with the raw preserved once by sha256 (referenced, not
 reconstructed). This is not lossless magic and not a Shannon violation; it is addressing.
 
-**Kernel-native (json=0, no Node):** each cube is a node keyed by the **Host-8 8-byte handle**
-(`handle8` = FNV-1a-64), byte-identical to `tools/graphify/graphify.py`, so cubes are nodes in the
-**same 60D atlas graph** both colonies use. The carrier is a **json=0 HBP tuple row**, not JSON
-(JSON is cold-debug only, per the HyperBEHCS adapter rule).
+**Canonical contract = Rust on the metal kernel (not Node).** `host8/qprism_cube_host8.rs` is the
+authoritative Host-8 cube/selector contract (`[u8;8]` handles, no serde/JSON/Node), built + tested
+on **WSL Ubuntu rustc** (4/4). The Python `qprism/cube_absorb.py` is the sim/harness **reference**
+only. Both agree byte-for-byte: node PK `handle8` = FNV-1a-64(node_id) = `5bd9437e2a3fe005`
+(Rust == Python == `tools/graphify/graphify.py`).
+
+**Bilateral-converged handles + selector** (acer ↔ liris, GitHub-mediated):
+- `handle8` = FNV-1a-64(node_id) — graphify **node PK** (both colonies; liris switches from her
+  earlier `fold_host8_source_tuple` to this for true node-identity parity).
+- `source8` / `tuple8` = sha256(...)[..8] — content/provenance handles (adopted from liris).
+- selector = **graphify-V3 `ASOLARIA-GRAPHIFY-V3-HYPERBEHCS-60D`**, the canonical **11 `selector_axis:*`**
+  + `selector_constraint:hyperbehcs-selector-router-60d` (the live :4790 schema).
+
+The carrier is a **json=0 HBP tuple row**, not JSON (JSON is cold-debug only).
 
 ```
 raw M/EEG (D:, referenced by sha256)
