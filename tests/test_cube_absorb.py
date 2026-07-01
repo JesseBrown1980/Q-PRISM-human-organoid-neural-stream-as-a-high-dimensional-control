@@ -65,3 +65,13 @@ def test_cube_source_drives_prism_arm():
 def test_control_vector_valid():
     v = cube_to_control(absorb_window(_fixture_window()))
     assert v.shape == (5,) and np.all((v >= 0) & (v <= 1))
+
+
+def test_active_glyph_law_is_gated():
+    ch = absorb_window(_fixture_window(), subject="S5")
+    law = ch.active_glyph_law()
+    assert law.startswith("QPRISMACTIVEGLYPH|") and law.endswith("|json=0")
+    for gate in ("compile=0", "interpret=0", "fire=0", "behavior=represent_address",
+                 "geometry=graphify60d"):
+        assert gate in law
+    assert f"handle8={ch.handle8}" in law

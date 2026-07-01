@@ -104,6 +104,16 @@ class CubeChunk:
     tuple_bytes: int = TUPLE_BYTES
     tuple: bytes = field(default=b"", repr=False)
 
+    def active_glyph_law(self) -> str:
+        """CARET design-lens, gated: the glyph's address/geometry IS a behavior *descriptor*
+        (active symbolic geometry) -- but it is representation-only. behavior=represent_address;
+        compile=0/interpret=0/fire=0. Execution stays operator-gated on the metal kernel.
+        The 'alien' provenance is a disputed/hoax artifact and stays outside the gate; only the
+        'geometry as addressable behavior' idea is imported. Bilateral parity with liris."""
+        return ("QPRISMACTIVEGLYPH"
+                f"|handle8={self.handle8}|geometry=graphify60d|behavior=represent_address"
+                f"|compile=0|interpret=0|fire=0|json=0")
+
     def hbp_row(self) -> str:
         """json=0 kernel-native tuple row (the primary carrier). No JSON."""
         f = self
