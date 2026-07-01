@@ -114,7 +114,16 @@ signal / corpus / event stream
 
 That is why the layers can work together: D22-style translation and cube receipts let the same object travel omnidirectionally across language surfaces. Compression in one representation can become recompression in another representative layer when the codebook, descriptor, route, and digest are present. This is closer to a prism or frequency-comb model than to a single-file compressor.
 
-Honest boundary: this is still not raw entropy magic. High-entropy residuals remain content-addressed or cold-held once. The lossless part is the represented structure: indices, descriptors, glyph/noun/verb routes, cube addresses, proof hashes, and recomputation rules. The derived control tuple can be tiny because it is the recomposed white-light signature, not a promise to regenerate every raw byte.
+Honest boundary: this is still not raw entropy magic. High-entropy residuals remain content-addressed or cold-held once. The lossless part is the represented structure: indices, descriptors, glyph/noun/verb routes, cube addresses, proof hashes, and recomputation rules. The derived control tuple can be tiny because it is the recomposed white-light signature, not a promise to regenerate every raw byte. The Liris Host8 proof also demonstrates the bounded comb transcode on a Q-PRISM-sized tuple: 3,200 bytes -> 2,560 BEHCS-1024 symbols -> 3,200 bytes, byte-identical (`QPRISMCOMBROUNDTRIP`).
+
+## Collision Duality: Avoidance vs Causation
+
+The waves/cascades public repo adds the execution/search split:
+
+- **Avoidance lane:** Brown-Hilbert geometry, prime/CRT coprimality, rule-of-three partitioning, sha16 seeds, nested ports, and rename-before-load make collisions impossible to express for execution.
+- **Causation lane:** cascade waves deliberately collide in a shared search region; reverse-gain GNN turns many rooms into one answer. The collision is the reduction.
+
+Q-PRISM inherits both. The Host8 cube handle is the avoidance lane; the prism schedule search is the causation lane. The contract row is `QPRISMCOMBPRISM`, with `represented_structure_loss=0` scoped to descriptors/routes/proofs, and `raw_residual=content_addressed` for entropy-bearing payloads.
 ## Boundary
 
 The old receipts are honest about their boundary:

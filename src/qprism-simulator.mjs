@@ -2,7 +2,6 @@ import { classicalSchedule, prismSchedule, randomSchedule } from './qprism-contr
 
 const H = 6.62607015e-34;
 const DALTON_KG = 1.66053906660e-27;
-const J2_PRIMARY_MAX_X = 3.0542369282271404;
 
 export const NATURE_2026_APPARATUS = Object.freeze({
   atoms: 7_000,
@@ -10,7 +9,7 @@ export const NATURE_2026_APPARATUS = Object.freeze({
   gratingSpacingM: 0.983,
   uvWavelengthM: 266e-9,
   velocityMps: 160,
-  velocitySigmaMps: 30,
+  velocitySigmaMps: 10,
   massKDa: 172,
   massSigmaKDa: 18,
   p2OptMw: 15.2,
@@ -18,6 +17,40 @@ export const NATURE_2026_APPARATUS = Object.freeze({
   gammaBlackbodyHz: 8.0,
   resonanceWidth: 0.35,
 });
+export const NATURE_2026_CURVE_CONSTRAINTS = Object.freeze({
+  status: 'MEASURED_FIG2B_EYE_DIGITIZED_CURVE_ENVELOPE',
+  figure2: Object.freeze({
+    massCenterKDa: 172,
+    massRangeKDa: Object.freeze([143, 197]),
+    p1Mw: 62,
+    p1SigmaMw: 2,
+    p2OptMw: 15.2,
+    p2SigmaMw: 0.3,
+    p3Mw: 68,
+    p3SigmaMw: 2,
+    visibilityScans: Object.freeze([0.10, 0.08]),
+    visibilitySigma: 0.01,
+    fig2bDigitizedP2Mw: Object.freeze([0, 5, 8, 12, 15, 17, 20, 24, 28, 32, 36, 40, 46, 52, 60, 70, 80]),
+    fig2bDigitizedVisibility: Object.freeze([0, 0.02, 0.05, 0.08, 0.095, 0.10, 0.093, 0.078, 0.058, 0.040, 0.026, 0.018, 0.024, 0.034, 0.035, 0.030, 0.028]),
+    digitization: 'ACER_FIGURE_DIGITIZED_BY_EYE_LIRIS_TEXT_CONFIRMED_NOT_SOURCE_DATA_TABLE',
+    relation: 'visibility_vs_G2_power_nonmonotonic_quantum_above_classical_below_200kDa',
+  }),
+  figure3: Object.freeze({
+    massRangeKDa: Object.freeze([400, 1000]),
+    velocityMps: 160,
+    velocitySigmaMps: 10,
+    p1Mw: 100,
+    p3Mw: 100,
+    relation: 'predicted_visibility_vs_mass_and_G2_power_quantum_classical_converge_at_high_mass',
+  }),
+});
+
+export const FIG2B_DIGITIZED_P2_MW = NATURE_2026_CURVE_CONSTRAINTS.figure2.fig2bDigitizedP2Mw;
+export const FIG2B_DIGITIZED_VISIBILITY = NATURE_2026_CURVE_CONSTRAINTS.figure2.fig2bDigitizedVisibility;
+export const FIG2B_PEAK_VISIBILITY = Math.max(...FIG2B_DIGITIZED_VISIBILITY);
+export const FIG2B_PEAK_P2_MW = FIG2B_DIGITIZED_P2_MW[FIG2B_DIGITIZED_VISIBILITY.indexOf(FIG2B_PEAK_VISIBILITY)];
+export const FIG2B_DIP_P2_MW = 40;
+export const FIG2B_REVIVAL_P2_MW = 60;
 
 export function resolveConfig(params = {}) {
   const cfg = { ...NATURE_2026_APPARATUS, ...params };
@@ -55,27 +88,45 @@ export function rhoRes(config = resolveConfig()) {
     gratingSpacingM: config.gratingSpacingM,
   });
 }
-
-export function besselJ2(x) {
-  let sum = 0;
-  let factorialK = 1;
-  let factorialKPlus2 = 2;
-  for (let k = 0; k < 28; k += 1) {
-    if (k > 0) {
-      factorialK *= k;
-      factorialKPlus2 *= k + 2;
-    }
-    const term = ((-1) ** k) * (x / 2) ** (2 * k + 2) / (factorialK * factorialKPlus2);
-    sum += term;
-    if (Math.abs(term) < 1e-14) break;
-  }
-  return sum;
+export function talbotConditionMassKDa({ rho = 1, velocityMps, gratingPeriodM, gratingSpacingM } = resolveConfig()) {
+  return (H * gratingSpacingM) / (Math.max(rho, 1e-12) * gratingPeriodM ** 2 * velocityMps * DALTON_KG * 1_000);
 }
 
-export function gratingFactor(p2Mw, config = resolveConfig()) {
-  const phi0 = (J2_PRIMARY_MAX_X / config.p2OptMw) * Math.max(0, p2Mw);
-  const peak = Math.abs(2 * besselJ2(J2_PRIMARY_MAX_X));
-  return peak > 0 ? clamp(Math.abs(2 * besselJ2(phi0)) / peak, 0, 1.25) : 0;
+export function curveCalibrationEnvelope(params = {}) {
+  const config = resolveConfig(params);
+  const talbotMassKDa = talbotConditionMassKDa({
+    rho: 1,
+    velocityMps: config.velocityMps,
+    gratingPeriodM: config.gratingPeriodM,
+    gratingSpacingM: config.gratingSpacingM,
+  });
+  const halfTalbotLineMassKDa = talbotConditionMassKDa({
+    rho: 0.5,
+    velocityMps: config.velocityMps,
+    gratingPeriodM: config.gratingPeriodM,
+    gratingSpacingM: config.gratingSpacingM,
+  });
+  return {
+    status: NATURE_2026_CURVE_CONSTRAINTS.status,
+    operatingPointVisibility: operatingPoint(config).visibility,
+    operatingPointTarget: config.measuredVisibility,
+    secondaryScanVisibility: 0.08,
+    p2PeakMw: FIG2B_PEAK_P2_MW,
+    p2DipMw: FIG2B_DIP_P2_MW,
+    p2RevivalMw: FIG2B_REVIVAL_P2_MW,
+    fig2bDigitizedP2Mw: FIG2B_DIGITIZED_P2_MW,
+    fig2bDigitizedVisibility: FIG2B_DIGITIZED_VISIBILITY,
+    velocitySigmaMps: config.velocitySigmaMps,
+    talbotMassKDa,
+    halfTalbotLineMassKDa,
+    constraints: NATURE_2026_CURVE_CONSTRAINTS,
+  };
+}
+
+export function gratingFactor(p2Mw, _config = resolveConfig()) {
+  return FIG2B_PEAK_VISIBILITY > 0
+    ? clamp(interpolate(FIG2B_DIGITIZED_P2_MW, FIG2B_DIGITIZED_VISIBILITY, Math.max(0, p2Mw)) / FIG2B_PEAK_VISIBILITY, 0, 1.25)
+    : 0;
 }
 
 export function visibilityAt({ velocityMps, massKDa, p2Mw }, config = resolveConfig()) {
@@ -213,6 +264,17 @@ function summarize(result) {
   };
 }
 
+function interpolate(xs, ys, x) {
+  if (x <= xs[0]) return ys[0];
+  for (let i = 1; i < xs.length; i += 1) {
+    if (x <= xs[i]) {
+      const t = (x - xs[i - 1]) / (xs[i] - xs[i - 1]);
+      return ys[i - 1] + t * (ys[i] - ys[i - 1]);
+    }
+  }
+  return ys[ys.length - 1];
+}
+
 function linspace(lo, hi, n) {
   if (n <= 1) return [(lo + hi) / 2];
   return Array.from({ length: n }, (_, i) => lo + ((hi - lo) * i) / (n - 1));
@@ -268,7 +330,7 @@ if (import.meta.url === `file://${process.argv[1]}` || process.argv[1]?.endsWith
     operatingPoint: {
       visibility: round(operatingPoint().visibility),
       target: NATURE_2026_APPARATUS.measuredVisibility,
-      evidence: 'MEASURED_SIM_ONE_POINT_CALIBRATION',
+      evidence: 'MEASURED_SIM_FIG2B_EYE_DIGITIZED_CURVE_ENVELOPE',
     },
     comparison: comparePolicies(process.argv[2] || 'q-prism-demo'),
   }, null, 2));

@@ -9,6 +9,7 @@ import {
 } from '../src/qprism-control-policy.mjs';
 import {
   comparePolicies,
+  curveCalibrationEnvelope,
   deBroglieWavelength,
   gratingFactor,
   operatingPoint,
@@ -40,7 +41,7 @@ test('Talbot length and rho are finite in the Nature regime', () => {
   assert.ok(rhoRes() > 0);
 });
 
-test('G2 grating factor is non-monotonic and peaks near 15.2 mW', () => {
+test('G2 grating factor is non-monotonic around the measured operating band', () => {
   const low = gratingFactor(3);
   const peak = gratingFactor(15.2);
   const high = gratingFactor(26);
@@ -82,4 +83,17 @@ test('direct simulation exposes per-step spatial records', () => {
   assert.equal(result.points.length, 5);
   assert.ok(result.points.every((p) => Number.isFinite(p.fringe)));
   assert.ok(result.points.every((p) => Number.isFinite(p.rho)));
+});
+test('Nature Fig. 2b eye-digitized curve envelope exposes Fig. 2/3 anchors', () => {
+  const env = curveCalibrationEnvelope();
+  assert.equal(env.status, 'MEASURED_FIG2B_EYE_DIGITIZED_CURVE_ENVELOPE');
+  assert.ok(Math.abs(env.operatingPointVisibility - 0.10) < 0.011);
+  assert.equal(env.secondaryScanVisibility, 0.08);
+  assert.equal(env.velocitySigmaMps, 10);
+  assert.ok(env.p2PeakMw > 16 && env.p2PeakMw < 18);
+  assert.equal(env.p2DipMw, 40);
+  assert.equal(env.p2RevivalMw, 60);
+  assert.deepEqual(env.fig2bDigitizedP2Mw.slice(0, 6), [0, 5, 8, 12, 15, 17]);
+  assert.ok(env.talbotMassKDa > 135 && env.talbotMassKDa < 142);
+  assert.ok(env.halfTalbotLineMassKDa > 270 && env.halfTalbotLineMassKDa < 285);
 });

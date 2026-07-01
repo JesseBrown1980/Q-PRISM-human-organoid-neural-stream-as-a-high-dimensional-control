@@ -14,7 +14,7 @@ test('runComparison summarizes all policies', () => {
   assert.ok(['classical', 'prism', 'random'].includes(result.winner));
   assert.match(result.ledgerRow, /^QPRISM_COMPARE\|/);
   assert.match(result.ledgerRow, /\|evidence=MEASURED_SIM\|/);
-  assert.match(result.ledgerRow, /\|physics=spatial_talbot_lau_one_point_calibrated\|/);
+  assert.match(result.ledgerRow, /\|physics=spatial_talbot_lau_fig2b_eye_digitized_curve_envelope\|/);
 });
 
 test('coupling sweep refuses pure-noise prism and rewards high coupling', () => {

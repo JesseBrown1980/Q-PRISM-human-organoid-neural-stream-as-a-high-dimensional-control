@@ -1,6 +1,6 @@
 # Spatial Talbot-Lau Calibration
 
-Status: `MEASURED_SIM_ONE_POINT_CALIBRATION` for the Liris scaffold. This is not a hardware validation and not a consciousness claim.
+Status: `MEASURED_SIM_FIG2B_EYE_DIGITIZED_CURVE_ENVELOPE` for the Liris scaffold. This is an eye-digitized curve envelope, not a source-data-table fit, not hardware validation, and not a consciousness claim.
 
 ## Why This File Exists
 
@@ -32,22 +32,23 @@ From the local Nature PDF extraction and the public article metadata:
 - de Broglie wavelength
 - Talbot length
 - spatial Talbot ratio `rho`
-- a Bessel-style middle-grating factor peaking near `P2 = 15.2 mW`
+- a Fig. 2b eye-digitized middle-grating response envelope: peak near `17 mW`, dip near `40 mW`, weak revival near `60 mW`
 - Gaussian velocity and mass selection windows
 - flux and SNR proxy scoring
 - one-point visibility scale so the reported operating point returns `V ~= 0.10`
+- Fig. 2b eye-digitized G2 response envelope: secondary scan `V = 0.08 +/- 0.01`, peak near `P2 = 17 mW`, dip near `40 mW`, weak revival near `60 mW`, velocity spread `10 m/s`, Talbot mass line near `138.6 kDa`, and `L = LT/2` line near `277.2 kDa`
 
-It intentionally does not claim full curve fit to the paper figures. The honest next calibration step is to digitize/ingest measured visibility curves and fit the width/decoherence parameters against them.
+It now includes a Fig. 2b eye-digitized G2-power response envelope. This is still not a source-data-table fit: the honest next calibration step is to ingest the published plotted/source points and fit the width/decoherence parameters rigorously. Until then, `curveCalibrationEnvelope()` exposes the digitized-envelope constraints reproducibly.
 
 ## Self-Validation Gate
 
 The coupling sweep prevents the harness from rewarding a neural/prism stream that is only noise.
 
-Latest Liris measured simulator output:
+Latest Liris measured simulator output after the Fig. 2b eye-digitized envelope update:
 
 ```text
-coupling=0.0  prism-classical=-0.029946
-coupling=0.9  prism-classical=+0.028933
+coupling=0.0  prism-classical=-0.033558
+coupling=0.9  prism-classical=+0.035142
 self_validation=PASS
 ```
 
@@ -63,7 +64,7 @@ This supports only the simulator-level statement that the harness distinguishes 
 Allowed:
 
 ```text
-A coupled prism schedule improved a one-point-calibrated spatial Talbot-Lau simulator over the declared classical scan baseline.
+A coupled prism schedule improved a Fig. 2b eye-digitized spatial Talbot-Lau simulator envelope over the declared classical scan baseline.
 ```
 
 Not allowed:

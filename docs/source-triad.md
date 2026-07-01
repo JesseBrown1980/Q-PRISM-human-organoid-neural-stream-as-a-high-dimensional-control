@@ -129,6 +129,19 @@ Why it matters for Q-PRISM:
 
 Q-PRISM uses this as the Stage 2 data path: raw neural evidence stays cold, derived event/features feed a quant tuple, and the repeated schedule-control loop consumes the tuple.
 
+
+## 6. Asolaria Waves / Cascades Collision Duality
+
+Public source:
+
+- `JesseBrown1980/Asolaria-waves-and-cascades-avoiding-collsions-and-causing-them` (`MEASURED_GITHUB_PUBLIC_SLICE`, `main` tip `fa5d827` when checked from Liris on 2026-07-01)
+
+Why it matters for Q-PRISM:
+
+- It names the two directions of the same fabric.
+- Forward / comb / execution: collisions are avoided by construction through Brown-Hilbert geometry, prime/CRT coprimality, rule-of-three partitioning, sha16 seeds, nested ports, and rename-before-load.
+- Backward / prism / search: collisions are caused on purpose in a separate search region; cascade waves converge, reverse-gain GNN reduces many rooms to one answer, and the interference peak is the signal.
+- Q-PRISM's Host8 node uses the forward collision-free graph key, while its schedule search uses the backward many-to-one discovery lane.
 ## Runtime Surface Consequence
 
 Q-PRISM should be wired to the measured local surfaces in `docs/asolaria-absorption-runtime-surfaces.md`: WSL/Ubuntu for heavy extraction, fabric for claims/canon, recall for HBP/HBI retrieval, atlas/graphify for representation maps, and AgentTerms/FEDENV only as a gated dispatch surface. This keeps cube absorption separate from runtime fire.
@@ -177,7 +190,7 @@ d=133 nm, L=0.983 m, v=160 m/s, m=172 kDa, P2=15.2 mW -> V ~= 0.10
 Current self-validation result:
 
 ```text
-QPRISM_COUPLING_SWEEP|schema=qprism.coupling_sweep.v1|seeds=24|steps=32|self_validation=PASS|zero_delta=-0.029946|high_delta=0.028933|physics=spatial_talbot_lau_one_point_calibrated|evidence=MEASURED_SIM|json=0
+QPRISM_COUPLING_SWEEP|schema=qprism.coupling_sweep.v1|seeds=24|steps=32|self_validation=PASS|zero_delta=-0.033558|high_delta=0.035142|physics=spatial_talbot_lau_fig2b_eye_digitized_curve_envelope|evidence=MEASURED_SIM|json=0
 ```
 
 This is the branch-comparison baseline for Acer/Liris review: pure-noise prism must lose, high-coupling prism may win, and both remain simulator-level until hardware evidence exists.

@@ -19,7 +19,7 @@ It asks a sharper experimental question:
 
 ## Current Liris Simulator
 
-The simulator is now a dependency-free spatial near-field Talbot-Lau scaffold calibrated to the Nature apparatus at one operating point.
+The simulator is now a dependency-free spatial near-field Talbot-Lau scaffold calibrated to the Nature apparatus at one operating point and constrained by a Fig. 2b eye-digitized G2-response envelope plus Fig. 3 text anchors.
 
 Measured anchor from the paper/PDF extraction:
 
@@ -35,7 +35,7 @@ The model uses the spatial Talbot ratio
 rho = L / L_T = L * h / (d^2 * m * v)
 ```
 
-so the lawful controls are middle-grating power, velocity-window selection, mass-window selection, and analysis schedule. It is `MEASURED_SIM_ONE_POINT_CALIBRATION`, not a hardware result.
+so the lawful controls are middle-grating power, velocity-window selection, mass-window selection, and analysis schedule. It is `MEASURED_SIM_FIG2B_EYE_DIGITIZED_CURVE_ENVELOPE`, not a hardware result or source-data-table full-curve fit.
 
 ## Layers
 
@@ -71,8 +71,8 @@ npm run quant:spanishbcbl
 Current measured simulator output on the Liris branch:
 
 ```text
-operating_point_visibility=0.09999 target=0.10 evidence=MEASURED_SIM_ONE_POINT_CALIBRATION
-QPRISM_COUPLING_SWEEP|schema=qprism.coupling_sweep.v1|seeds=24|steps=32|self_validation=PASS|zero_delta=-0.029946|high_delta=0.028933|physics=spatial_talbot_lau_one_point_calibrated|evidence=MEASURED_SIM|json=0
+operating_point_visibility=0.09999 target=0.10 evidence=MEASURED_SIM_FIG2B_EYE_DIGITIZED_CURVE_ENVELOPE
+QPRISM_COUPLING_SWEEP|schema=qprism.coupling_sweep.v1|seeds=24|steps=32|self_validation=PASS|zero_delta=-0.033558|high_delta=0.035142|physics=spatial_talbot_lau_fig2b_eye_digitized_curve_envelope|evidence=MEASURED_SIM|json=0
 ```
 
 ## Repository Map
@@ -93,5 +93,6 @@ QPRISM_COUPLING_SWEEP|schema=qprism.coupling_sweep.v1|seeds=24|steps=32|self_val
 - host8/QPRISM-HOST8-GRAPHIFY-SELECTOR-2026-07-01.hbp - tuple-text selector-axis receipt, `json=0`, `agentterms_fedenv_fire=0`.
 - docs/ACTIVE-GLYPH-CARET-LENS.md - disputed CARET artifact handled only as gated active-symbolic-geometry design lens (`compile=0`, `interpret=0`, `fire=0`).
 - docs/DIGITAL-PHYSICS-EXPANDABLE-SPACE-LENS.md - Brown-Hilbert slice expansion law for injecting PID-addressable points between space/time slices (`json=0`, `fire=0`).
+- docs/PRISM-COMB-COLLISION-DUALITY-MAP.md - forward comb collision-avoidance and backward prism collision-causation map (`QPRISMCOMBPRISM`, `json=0`, `fire=0`).
 - `test/qprism-smoke.test.mjs` - physics and policy smoke tests.
 - `test/qprism-experiment.test.mjs` - comparison and self-validation tests.

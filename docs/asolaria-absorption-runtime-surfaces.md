@@ -32,6 +32,15 @@ raw MEG/EEG/organoid/source stream
 
 This matches the fabric rule: representation first, execution later. The system can represent the input across tuple/cube surfaces without implying that a live agent, provider call, or hardware action occurred.
 
+
+## Comb / Prism Runtime Split
+
+The same Host8 cube can be read in two directions:
+
+- **Forward comb / execution:** the cube is addressed through collision-free Host8/Graphify lanes (`fnv1a64(graphify_id)`, Brown-Hilbert prefix, BEHCS-1024 selector, `json=0`). This lane is representation and routing only unless an operator-gated execution envelope exists.
+- **Backward prism / search:** candidate schedules, room routes, neural/event priors, and cube descriptors are allowed to converge in a separate search region. The intentional collision/interference peak is the many-to-one reduction that proposes a schedule.
+
+The HBP row for this split is `QPRISMCOMBPRISM`. It keeps `execution_region=collision_free` and `search_region=collision_causing` distinct so Q-PRISM does not confuse representation/search with live dispatch.
 ## Claim Boundary
 
 - `MEASURED`: local ports, files, HBP/HBI outputs, and WSL probes listed above.

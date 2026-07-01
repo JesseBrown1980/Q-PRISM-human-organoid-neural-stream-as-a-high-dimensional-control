@@ -67,6 +67,8 @@ pub const SELECTOR_CONSTRAINT: &str = "selector_constraint:hyperbehcs-selector-r
 pub const HOT_PATH: &str = "HBP_HBI_TUPLE_TEXT";
 pub const FRONTEND_PROJECTION: &str = "raw_projection_inert";
 pub const SPACE_EXPANSION_RULE: &str = "brown_hilbert_slice_expansion_pid_injection";
+pub const FORWARD_COMB_RULE: &str = "collision_avoidance_isolation_frequency_comb";
+pub const BACKWARD_PRISM_RULE: &str = "collision_causation_discovery_reverse_gain";
 pub const BH_RADIX: u64 = 1024;
 pub const BH_DEPTH: usize = 6;
 
@@ -152,6 +154,41 @@ pub fn bh_render(digits: &[u16]) -> String {
     }
     s
 }
+pub fn transcode_256_to_1024(data: &[u8]) -> Vec<u16> {
+    let mut out = Vec::with_capacity((data.len() * 8 + 9) / 10);
+    let mut acc = 0u32;
+    let mut bits = 0u8;
+    for b in data {
+        acc = (acc << 8) | *b as u32;
+        bits += 8;
+        while bits >= 10 {
+            bits -= 10;
+            out.push(((acc >> bits) & 0x03ff) as u16);
+            acc &= if bits == 0 { 0 } else { (1u32 << bits) - 1 };
+        }
+    }
+    if bits > 0 {
+        out.push(((acc << (10 - bits)) & 0x03ff) as u16);
+    }
+    out
+}
+
+pub fn transcode_1024_to_256(symbols: &[u16], nbytes: usize) -> Vec<u8> {
+    let mut out = Vec::with_capacity(nbytes);
+    let mut acc = 0u32;
+    let mut bits = 0u8;
+    for s in symbols {
+        acc = (acc << 10) | (*s as u32 & 0x03ff);
+        bits += 10;
+        while bits >= 8 && out.len() < nbytes {
+            bits -= 8;
+            out.push(((acc >> bits) & 0xff) as u8);
+            acc &= if bits == 0 { 0 } else { (1u32 << bits) - 1 };
+        }
+    }
+    out
+}
+
 
 impl QPrismCubeSelector {
     pub fn new(source_sha256: &str, tuple_sha256: &str) -> Result<Self, &'static str> {
@@ -180,6 +217,13 @@ impl QPrismCubeSelector {
         format!(
             "QPRISMSPACEEXPAND|handle8={}|graphify_id={}|rule={}|frame_model=Fn|transition=Fn_to_Fn_plus_1|slice_from={}|slice_to={}|spacetime_pixels=1|metatag=host8_descriptor|bh_radix={}|bh_depth={}|bh_prefix={}|inject_between=bh_digital_expansion_space_time_next_slice|pid_addressable_points=1|backend=representation_cube|frontend=raw_projection_inert|compile=0|interpret=0|fire=0|json=0",
             self.node_hex16(), self.graphify_id, SPACE_EXPANSION_RULE, slice_from, slice_to, BH_RADIX, BH_DEPTH, prefix
+        )
+    }
+
+    pub fn comb_prism_duality_row(&self) -> String {
+        format!(
+            "QPRISMCOMBPRISM|handle8={}|graphify_id={}|fabric=one|forward={}|backward={}|comb_teeth=BEHCS1024_GLYPH_VALUES|avoidance_layers=brown_hilbert+prime_crt+rule_of_three+sha16+ports+rename_before_load|discovery_layers=cascade_waves+shared_search_region+reverse_gain_gnn+many_rooms_to_one_answer|represented_structure_loss=0|raw_residual=content_addressed|execution_region=collision_free|search_region=collision_causing|compile=0|interpret=0|fire=0|json=0",
+            self.node_hex16(), self.graphify_id, FORWARD_COMB_RULE, BACKWARD_PRISM_RULE
         )
     }
 
@@ -231,10 +275,31 @@ mod tests {
         assert!(expansion.contains("|spacetime_pixels=1|metatag=host8_descriptor|"));
         assert!(expansion.contains("|inject_between=bh_digital_expansion_space_time_next_slice|pid_addressable_points=1|"));
         assert!(expansion.contains("|bh_radix=1024|bh_depth=6|bh_prefix="));
+
+        let duality = sel.comb_prism_duality_row();
+        assert!(duality.contains("QPRISMCOMBPRISM|"));
+        assert!(duality.contains("|fabric=one|forward=collision_avoidance_isolation_frequency_comb|"));
+        assert!(duality.contains("|backward=collision_causation_discovery_reverse_gain|"));
+        assert!(duality.contains("|comb_teeth=BEHCS1024_GLYPH_VALUES|"));
+        assert!(duality.contains("|execution_region=collision_free|search_region=collision_causing|"));
+        assert!(duality.contains("|compile=0|interpret=0|fire=0|json=0"));
         assert!(!sel.raw_in_repo);
         assert!(!sel.execution_allowed());
     }
 
+    #[test]
+    fn comb_transcode_roundtrip_is_byte_identical() {
+        let mut tuple = vec![0u8; 3200];
+        let mut i = 0usize;
+        while i < tuple.len() {
+            tuple[i] = ((i * 37 + 11) % 256) as u8;
+            i += 1;
+        }
+        let symbols = transcode_256_to_1024(&tuple);
+        let recovered = transcode_1024_to_256(&symbols, tuple.len());
+        assert_eq!(symbols.len(), 2560);
+        assert_eq!(recovered, tuple);
+    }
     #[test]
     fn active_glyph_law_is_descriptor_only() {
         let sel = QPrismCubeSelector::new(
