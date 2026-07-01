@@ -91,5 +91,6 @@ QPRISM_COUPLING_SWEEP|schema=qprism.coupling_sweep.v1|seeds=24|steps=32|self_val
 - src/qprism-quant-chunk.mjs - SpanishBCBL metadata-to-quant control tuple probe, derived-only and raw-data-free.
 - host8/qprism_graphify_selector.rs - no-Node/no-JSON Host8 selector contract for Graphify V3 / HyperBEHCS 60D alignment.
 - host8/QPRISM-HOST8-GRAPHIFY-SELECTOR-2026-07-01.hbp - tuple-text selector-axis receipt, `json=0`, `agentterms_fedenv_fire=0`.
+- docs/ACTIVE-GLYPH-CARET-LENS.md - disputed CARET artifact handled only as gated active-symbolic-geometry design lens (`compile=0`, `interpret=0`, `fire=0`).
 - `test/qprism-smoke.test.mjs` - physics and policy smoke tests.
 - `test/qprism-experiment.test.mjs` - comparison and self-validation tests.

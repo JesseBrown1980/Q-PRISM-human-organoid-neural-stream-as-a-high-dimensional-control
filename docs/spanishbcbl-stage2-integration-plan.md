@@ -124,7 +124,7 @@ The cube selector must not remain a parallel app id. It is aligned to the existi
 QPRISMHOST8HDR|schema=qprism.host8.graphify_selector.v1|frame=60D_PLUS_HYPERBEHCS|graphify_schema=ASOLARIA-GRAPHIFY-V3-HYPERBEHCS-60D|json=0
 QPRISMHOST8HANDLE|field=source|bytes=8|derivation=sha256_prefix_8|role=raw_or_feature_source_reference|json=0
 QPRISMHOST8HANDLE|field=tuple|bytes=8|derivation=sha256_prefix_8|role=quant_tuple_reference|json=0
-QPRISMHOST8HANDLE|field=node|bytes=8|derivation=fold_host8_source_tuple|role=graphify_node_handle|json=0
+QPRISMHOST8HANDLE|field=node|bytes=8|derivation=fnv1a64_graphify_id|role=graphify_node_primary_key|json=0
 QPRISMGRAPHIFY60D|selector_constraint=selector_constraint:hyperbehcs-selector-router-60d|axis_count=11|status=aligned_contract|json=0
 ```
 

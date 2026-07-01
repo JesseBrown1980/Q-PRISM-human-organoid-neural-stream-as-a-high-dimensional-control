@@ -1,10 +1,10 @@
 //! Q-PRISM Host8 selector alignment for Graphify V3 / HyperBEHCS 60D.
 //!
-//! This file is deliberately standalone Rust: no Node, no JSON, no serde.
+//! Standalone Rust: no Node, no JSON, no serde. The graph node primary key is
+//! FNV1a64(graphify_id), while content handles remain sha256-prefix Host8 values.
 //! It models the kernel/on-metal contract Q-PRISM should hand to Asolaria OS:
-//! a cube chunk is represented by 8-byte handles plus HBP/HBI tuple rows, and
-//! only maps/searches by graphify selector axes until an operator-gated executor
-//! explicitly fires a separate AgentTerms/FEDENV envelope.
+//! represent/address first; AgentTerms/FEDENV execution only after a separate
+//! operator-gated envelope.
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Hash)]
 pub struct Host8(pub [u8; 8]);
@@ -26,6 +26,15 @@ impl Host8 {
         Ok(Host8(out))
     }
 
+    pub fn from_fnv1a64_id(id: &str) -> Self {
+        let mut h: u64 = 0xcbf29ce484222325;
+        for b in id.as_bytes() {
+            h ^= *b as u64;
+            h = h.wrapping_mul(0x100000001b3);
+        }
+        Host8(h.to_be_bytes())
+    }
+
     pub fn to_hex16(self) -> [u8; 16] {
         const HEX: &[u8; 16] = b"0123456789abcdef";
         let mut out = [0u8; 16];
@@ -36,6 +45,10 @@ impl Host8 {
             i += 1;
         }
         out
+    }
+
+    pub fn hex_string(self) -> String {
+        String::from_utf8_lossy(&self.to_hex16()).into_owned()
     }
 }
 
@@ -71,6 +84,7 @@ pub struct QPrismCubeSelector {
     pub source: Host8,
     pub tuple: Host8,
     pub node: Host8,
+    pub graphify_id: String,
     pub raw_in_repo: bool,
     pub agentterms_fedenv_fire: bool,
 }
@@ -79,23 +93,23 @@ impl QPrismCubeSelector {
     pub fn new(source_sha256: &str, tuple_sha256: &str) -> Result<Self, &'static str> {
         let source = Host8::from_sha256_prefix(source_sha256)?;
         let tuple = Host8::from_sha256_prefix(tuple_sha256)?;
-        let node = fold_host8(source, tuple);
-        Ok(Self { source, tuple, node, raw_in_repo: false, agentterms_fedenv_fire: false })
+        let graphify_id = format!("qprism_cube:{}", tuple.hex_string());
+        let node = Host8::from_fnv1a64_id(&graphify_id);
+        Ok(Self { source, tuple, node, graphify_id, raw_in_repo: false, agentterms_fedenv_fire: false })
     }
 
     pub fn graphify_axis_count(&self) -> usize { SELECTOR_AXES.len() }
 
     pub fn execution_allowed(&self) -> bool { self.agentterms_fedenv_fire }
-}
 
-pub fn fold_host8(a: Host8, b: Host8) -> Host8 {
-    let mut out = [0u8; 8];
-    let mut i = 0;
-    while i < 8 {
-        out[i] = a.0[i].rotate_left((i as u32) & 7) ^ b.0[7 - i].rotate_right(((7 - i) as u32) & 7);
-        i += 1;
+    pub fn node_hex16(&self) -> String { self.node.hex_string() }
+
+    pub fn active_glyph_row(&self) -> String {
+        format!(
+            "QPRISMACTIVEGLYPH|handle8={}|geometry=graphify60d|behavior=represent_address|compile=0|interpret=0|fire=0|json=0",
+            self.node_hex16()
+        )
     }
-    Host8(out)
 }
 
 #[cfg(test)]
@@ -105,7 +119,13 @@ mod tests {
     #[test]
     fn host8_uses_first_eight_sha_bytes() {
         let h = Host8::from_sha256_prefix("7be9d49b3af31036ccce106658588309d8fb808aaf546cbf7c92baaa1cd3767d").unwrap();
-        assert_eq!(core::str::from_utf8(&h.to_hex16()).unwrap(), "7be9d49b3af31036");
+        assert_eq!(h.hex_string(), "7be9d49b3af31036");
+    }
+
+    #[test]
+    fn fnv1a64_graphify_pk_is_stable() {
+        let h = Host8::from_fnv1a64_id("qprism_cube:7be9d49b3af31036");
+        assert_eq!(h.hex_string(), "5edd3a45544437d4");
     }
 
     #[test]
@@ -117,7 +137,21 @@ mod tests {
         assert_eq!(GRAPHIFY_SCHEMA, "ASOLARIA-GRAPHIFY-V3-HYPERBEHCS-60D");
         assert_eq!(GRAPHIFY_FRAME, "60D_PLUS_HYPERBEHCS");
         assert_eq!(sel.graphify_axis_count(), 11);
+        assert_eq!(sel.graphify_id, "qprism_cube:7be9d49b3af31036");
+        assert_eq!(sel.node_hex16(), "5edd3a45544437d4");
         assert!(!sel.raw_in_repo);
         assert!(!sel.execution_allowed());
+    }
+
+    #[test]
+    fn active_glyph_law_is_descriptor_only() {
+        let sel = QPrismCubeSelector::new(
+            "0ebf9ac4c41cb33d5d1acb071f4e06c8314e83d38088ec1357f36fb786b226b2",
+            "7be9d49b3af31036ccce106658588309d8fb808aaf546cbf7c92baaa1cd3767d",
+        ).unwrap();
+        let row = sel.active_glyph_row();
+        assert!(row.starts_with("QPRISMACTIVEGLYPH|handle8=5edd3a45544437d4"));
+        assert!(row.contains("|geometry=graphify60d|behavior=represent_address"));
+        assert!(row.contains("|compile=0|interpret=0|fire=0|json=0"));
     }
 }
