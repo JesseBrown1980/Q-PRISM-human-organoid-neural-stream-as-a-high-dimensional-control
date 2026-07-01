@@ -84,6 +84,23 @@ QPRISM_CUBE_CHUNK|schema=qprism.cube_chunk.v1|source_sha256=...|window=...|tuple
 ```
 
 That is the 43+ / 47D / 60D+ absorption frame in repo terms: addressable levels and language surfaces represent the input; the scheduler consumes the cube-level control signature.
+
+## Prism / Comb Recomposition Law
+
+The reduction layer is not a single alphabet, single tuple, or single codec. It is a prism stack:
+
+```text
+signal / corpus / event stream
+  -> separate into representation wavelengths
+     (BEHCS-256, BEHCS-1024, HyperBEHCS variants, glyph nouns/verbs, sha, hex, binary, HBI/HBP, human labels, D-axis tuples)
+  -> quant/recompress each wavelength through the matching lane
+     (triple quant, zeta/von-Mangoldt, cylindrical approximation, cube descriptors, route/address handles)
+  -> recombine through 60D+ cubes into one white-light control object
+```
+
+That is why the layers can work together: D22-style translation and cube receipts let the same object travel omnidirectionally across language surfaces. Compression in one representation can become recompression in another representative layer when the codebook, descriptor, route, and digest are present. This is closer to a prism or frequency-comb model than to a single-file compressor.
+
+Honest boundary: this is still not raw entropy magic. High-entropy residuals remain content-addressed or cold-held once. The lossless part is the represented structure: indices, descriptors, glyph/noun/verb routes, cube addresses, proof hashes, and recomputation rules. The derived control tuple can be tiny because it is the recomposed white-light signature, not a promise to regenerate every raw byte.
 ## Boundary
 
 The old receipts are honest about their boundary:
