@@ -1,0 +1,115 @@
+# Q-PRISM — neural stream as a high-dimensional control (Acer build)
+
+**Can a prismed neural/consciousness-derived signal improve prediction, control, or
+discovery in a macroscopic quantum-interference experiment, beyond random and classical
+baselines?** That is a *testable* question, and this repo is the apparatus for testing it —
+in simulation first, with zero human or hardware risk.
+
+> This is the **Acer** build (`acer/` branch). A parallel **Liris** build exists for
+> bilateral comparison; GitHub is the mediator. See [Bilateral](#bilateral-build).
+
+## The reframe (what this is NOT)
+
+Q-PRISM is **not** "consciousness magically touches quantum matter" — that isn't testable
+and would be a weak claim. The neural stream never touches a wavefunction. It is prismed
+through Asolaria/HyperBEHCS into **lawful physical control parameters only** — middle-grating
+laser power, velocity-window and mass-filter selection — and evaluated against a physics
+simulator of the interferometer. See [`docs/CLAIMS-GATE.md`](docs/CLAIMS-GATE.md).
+
+## Physics layer — calibrated to a real experiment
+
+The simulator is a **spatial near-field Talbot–Lau interferometer**, calibrated to
+**Nature s41586-025-09917-9** (Arndt group, Vienna — quantum interference of sodium metal
+clusters >7,000 atoms, >170,000 Da, macroscopicity μ=15.5):
+
+| parameter | value | source |
+|---|---|---|
+| grating period `d` | 133 nm (266 nm laser / 2) | paper |
+| grating separation `L` | 0.983 m | paper |
+| beam velocity | ~160 m/s | paper |
+| cluster mass | 143–197 kDa (mean 172) | paper |
+| vacuum | 9×10⁻⁹ mbar | paper |
+| operating visibility | **V = 0.10 ± 0.01** at P2 = 15.2 mW | paper |
+
+Resonance is velocity- and mass-dependent via `ρ = L/L_T = L·h /(d²·m·v)`, so velocity and
+mass selection are real control levers; middle-grating power gives a Bessel-type contrast
+curve peaking at the paper's P2 ≈ 15.2 mW. **The model reproduces the paper's operating
+point: sim V = 0.099 vs measured 0.10 ± 0.01.** Absolute predictions are calibrated to that
+one point; full-curve calibration to Fig. 2/3 is future work (`TAG: calibrated-to-1-point`).
+
+## The three-arm blinded test
+
+`random` · `optimizer` (classical (1+1)-ES) · `prism` (identical ES **+** neural nudge).
+The prism and optimizer share the **exact same search backbone** — the only difference is
+the neural stream — so any gap isolates the neural contribution and nothing else.
+
+A synthetic `NeuralStream` with an `oracle_coupling` knob lets us prove the harness is honest:
+
+```
+python run_experiment.py            # coupling sweep + self-validation
+python -m pytest tests/ -q          # 10 tests incl. the honest-null + power checks
+```
+
+### Measured (this build, budget 80, 30 seeds; score = fraction of ground-truth SNR)
+
+| oracle_coupling | random | optimizer | prism | Welch p | verdict |
+|---:|---:|---:|---:|---:|---|
+| 0.0 | 0.824 | 0.891 | ~0.85 | 0.15 | **no advantage** (null holds — stream is noise) |
+| 0.3 | 0.824 | 0.891 | 0.954 | 0.09 | not significant |
+| 0.6 | 0.824 | 0.891 | 0.994 | 0.006 | **prism > optimizer** |
+| 0.9 | 0.824 | 0.891 | 1.003 | 0.003 | **prism > optimizer** |
+
+**Self-validation PASS:** the prism gains an advantage *only* once the stream genuinely
+carries information (coupling ≥ 0.6), and none when it is noise (coupling 0). A harness that
+rewarded a noise stream would be rigged; this one does not.
+
+## Why this design (external-verifier grounding)
+
+The methodology follows the **grounded refinement loop**: a proposer suggests actions, a
+*checkable verifier* scores them, the proposer refines. This is exactly the "add an external
+verifier" step named as the highest-value next move in the Asolaria report (§8), and it is
+the pattern shown to work in **COMPILOT** (Merouani, Kara Bernou & Baghdadi, *Agentic
+Auto-Scheduling: An Experimental Study of LLM-Guided Loop Optimization*, PACT 2025,
+arXiv:2511.00592) — an LLM proposes loop transformations, a compiler returns legality +
+measured speedup, and the loop reaches 2.66–3.54× and rivals the Pluto polyhedral optimizer.
+Here the **physics simulator is the verifier** and the schedule sources are the proposers.
+A natural next arm is an **LLM/COMPILOT-style proposer** grounded by the same simulator,
+benchmarked against the neural-prism arm.
+
+## Layers (roadmap)
+
+1. **Physics** — spatial Talbot–Lau sim (this build). *Next:* full-curve calibration.
+2. **Prism** — Asolaria maps streams → HyperBEHCS selector tuples (`qprism/behcs.py`) →
+   control proposals. Never claims "mind enters wavefunction."
+3. **Neural** — **synthetic first** (here). Non-invasive EEG/eye/breath/attention later;
+   organoid/Neuralink-class only much later, with IRB/consent, no shortcut.
+4. **Experiment** — three-arm blinded comparison (this build).
+5. **Claim gate** — [`docs/CLAIMS-GATE.md`](docs/CLAIMS-GATE.md).
+
+## Bilateral build
+
+Built in parallel by **Acer** (this branch, numpy/scipy, calibrated spatial model) and
+**Liris** (independent scaffold). Compare branches, attack-verify each other's physics, merge
+the stronger pieces. GitHub is the mediator.
+
+## Honesty boundaries
+
+No consciousness/physics/hardware-transcending claims. The neural stream proposes control
+parameters; the simulator, not the prism, decides whether a proposal is good; and no result
+here is a claim about real neural data — only about whether the *method* can detect a signal
+when one exists. Calibration is to a single reported data point. See `docs/CLAIMS-GATE.md`.
+
+## Layout
+```
+qprism/physics.py   spatial Talbot-Lau forward model (calibrated to the paper)
+qprism/sources.py   random / optimizer / prism schedule sources + synthetic NeuralStream
+qprism/harness.py   three-arm blinded comparison + self-validation
+qprism/behcs.py     BEHCS-1024 selector-tuple identifiers
+run_experiment.py   CLI
+tests/              physics sanity + harness-integrity (honest-null + power) tests
+docs/CLAIMS-GATE.md what a "win" may and may not claim
+```
+
+*Credit: reframing from an untestable metaphysical claim to a blinded, simulator-grounded
+control-signal test is the author's (Jesse Daniel Brown). Physics-anchor paper and COMPILOT
+cited above. AI assistance per the Asolaria report §9.*
