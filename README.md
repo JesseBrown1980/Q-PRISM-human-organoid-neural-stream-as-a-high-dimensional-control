@@ -50,21 +50,25 @@ A synthetic `NeuralStream` with an `oracle_coupling` knob lets us prove the harn
 
 ```
 python run_experiment.py            # coupling sweep + self-validation
-python -m pytest tests/ -q          # 10 tests incl. the honest-null + power checks
+python -m pytest tests/ -q          # 25 tests incl. the honest-null + power checks
 ```
 
-### Measured (this build, budget 80, 30 seeds; score = fraction of ground-truth SNR)
+### Measured (this build, Fig-2b-calibrated physics, budget 80, 30 seeds; score = fraction of ground-truth SNR)
 
-| oracle_coupling | random | optimizer | prism | Welch p | verdict |
-|---:|---:|---:|---:|---:|---|
-| 0.0 | 0.824 | 0.891 | ~0.85 | 0.15 | **no advantage** (null holds — stream is noise) |
-| 0.3 | 0.824 | 0.891 | 0.954 | 0.09 | not significant |
-| 0.6 | 0.824 | 0.891 | 0.994 | 0.006 | **prism > optimizer** |
-| 0.9 | 0.824 | 0.891 | 1.003 | 0.003 | **prism > optimizer** |
+| oracle_coupling | random | optimizer | prism | Welch t | p | verdict |
+|---:|---:|---:|---:|---:|---:|---|
+| 0.0 | 0.840 ± 0.076 | 0.842 ± 0.275 | 0.848 ± 0.108 | +0.12 | 0.909 | **no advantage** (null holds — stream is noise) |
+| 0.3 | 0.840 ± 0.076 | 0.842 ± 0.275 | 0.949 ± 0.043 | +2.11 | 0.043 | **prism > optimizer** |
+| 0.6 | 0.840 ± 0.076 | 0.842 ± 0.275 | 0.989 ± 0.012 | +2.93 | 0.007 | **prism > optimizer** |
+| 0.9 | 0.840 ± 0.076 | 0.842 ± 0.275 | 1.000 ± 0.002 | +3.14 | 0.004 | **prism > optimizer** |
 
-**Self-validation PASS:** the prism gains an advantage *only* once the stream genuinely
-carries information (coupling ≥ 0.6), and none when it is noise (coupling 0). A harness that
-rewarded a noise stream would be rigged; this one does not.
+(`results/coupling-sweep-calibrated.json`; the pre-calibration sweep is kept at
+`results/coupling-sweep.json` — under the old physics the 0.3 band was unresolved, p=0.09.)
+
+**Self-validation PASS on the calibrated physics:** the prism gains an advantage *only* when
+the stream genuinely carries information (coupling ≥ 0.3, strengthening monotonically), and
+none when it is noise (coupling 0, p=0.91). A harness that rewarded a noise stream would be
+rigged; this one does not.
 
 ## Why this design (external-verifier grounding)
 
