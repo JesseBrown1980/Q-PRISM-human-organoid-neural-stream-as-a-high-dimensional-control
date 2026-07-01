@@ -60,22 +60,31 @@ Why it matters for Q-PRISM:
 Primary sources:
 
 - Meta blog: <https://ai.meta.com/blog/brain2qwerty-brain-ai-human-communication/>
-- Code: <https://github.com/facebookresearch/brain2qwerty>
+- code: <https://github.com/facebookresearch/brain2qwerty>
 - v2 paper PDF: <https://facebookresearch.github.io/brain2qwerty/assets/brain2qwerty_v2.pdf>
-- v1 dataset: <https://huggingface.co/datasets/bcbl190626/SpanishBCBL>
+- public dataset: <https://huggingface.co/datasets/bcbl190626/SpanishBCBL>
+- companion arXiv: <https://arxiv.org/abs/2502.07429>
 
-Paper and repo facts verified from primary surfaces:
+Layer split:
 
-- Brain2Qwerty v2 is a non-invasive MEG typed-sentence decoder.
-- v2 uses about 22,000 sentences from 9 participants, about 10 hours each.
-- reported v2 performance is WER 39% on average, equivalent to about 61% word accuracy; best participant had half of decoded sentences at one word error or less.
-- the released code includes `brain2qwerty_v1/` and `brain2qwerty_v2/`.
-- the public v1 SpanishBCBL dataset is CC BY-NC 4.0; v2 data is not public in the GitHub README at this time.
+- Brain2Qwerty v2 result: non-invasive MEG typed-sentence decoding, about 22,000 sentences from 9 participants, about 10 h MEG each, average WER 39% / about 61% word accuracy.
+- SpanishBCBL public dataset: Brain2Qwerty v1 / DECOMEG public release, MEG+EEG recordings plus logs for Spanish sentence typing from memory, CC BY-NC 4.0, about 262-280 GB.
+
+SpanishBCBL public dataset facts from the Hugging Face card:
+
+- 35 healthy adult volunteers from BCBL, native Spanish speakers, right-handed skilled typists.
+- Task: read -> wait -> type. Each session used 128 unique declarative Spanish sentences of 5-8 words.
+- MEG: about 5.1K sentences / 193K characters; 306-channel Megin/Elekta Neuromag at 1 kHz.
+- EEG: about 4K sentences / 146K characters; 64-channel BrainVision actiCAP slim at 1 kHz.
+- Total typing time: about 21.5 h MEG and 17.7 h EEG.
+- Repeated MEG identities: S1/S18, S4/S14, S5/S10/S21; excluding S23 and merging repeats yields 19 unique MEG participants.
+- Public release excludes direct identifying materials such as structural MRI/T1, head-position videos, eye-tracking, and session videos.
 
 Why it matters for Q-PRISM:
 
 - It grounds the neural-stream premise in a real non-invasive language-decoding system.
 - It supports typed-language or attempted-typing neural streams as the first realistic input adapter.
+- It gives Stage 2 an events-first public dataset path before any live human or organoid capture.
 - It does **not** prove arbitrary thought reading, consciousness transfer, or quantum control.
 
 ## 4. Asolaria local-first self-refining substrate
@@ -98,9 +107,35 @@ Why it matters for Q-PRISM:
 - The 100B-style packet/cube discipline is relevant as a data architecture, not as a reason to store raw streams.
 - Q-PRISM should keep distilled schedules, hashes, metrics, and farmed insights; it should not hoard raw neural or biological data.
 
+## 5. Asolaria Quant / Reductions
+
+Local source:
+
+`C:\Users\rayss\ASOLARIA-AS-NEURAL-NETWORK\tools\behcs\quant-huge-message-benchmark.mjs`
+
+Receipts:
+
+- `C:\Users\rayss\ASOLARIA-AS-NEURAL-NETWORK\docs\ACER-QUANT-HUGE-MESSAGE-BENCH-2026-06-11.hbp`
+- `C:\Users\rayss\ASOLARIA-AS-NEURAL-NETWORK\docs\LIRIS-QUANT-HUGE-MESSAGE-BENCH-READBACK-2026-06-11.hbp`
+- `docs/asolaria-quant-reductions-anchor.md`
+
+Why it matters for Q-PRISM:
+
+- The old system already measured the useful large-payload pattern: `O(size)` head paid once, then `O(1)` tuple-tail operations per downstream consumer.
+- The tuple payload is constant around 3.1KB for the Quant8 huge-message bench.
+- Liris readback accepted Acer's 1-2GB rows as machine-tagged receipts and independently reran 1/64/256MB.
+- A fresh bounded Liris rerun for this branch reconfirmed 1/8/64MB tail collapse.
+- The boundary stays explicit: this is a referential/control/addressing tuple and repeated-tail reduction, not arbitrary raw-byte decompression and not a proof gate by itself.
+
+Q-PRISM uses this as the Stage 2 data path: raw neural evidence stays cold, derived event/features feed a quant tuple, and the repeated schedule-control loop consumes the tuple.
+
+## Runtime Surface Consequence
+
+Q-PRISM should be wired to the measured local surfaces in `docs/asolaria-absorption-runtime-surfaces.md`: WSL/Ubuntu for heavy extraction, fabric for claims/canon, recall for HBP/HBI retrieval, atlas/graphify for representation maps, and AgentTerms/FEDENV only as a gated dispatch surface. This keeps cube absorption separate from runtime fire.
+
 ## Combined Research Sentence
 
-Q-PRISM is an agentic auto-scheduler for macroscopic quantum-interference experiments, using Asolaria-style compact receipts and claim gates, with Brain2Qwerty-style neural-language streams treated as high-dimensional schedule priors rather than as proven consciousness-physics mechanisms.
+Q-PRISM is an agentic auto-scheduler for macroscopic quantum-interference experiments, using Asolaria-style compact receipts and claim gates, with Brain2Qwerty/SpanishBCBL-style neural-language streams treated as high-dimensional schedule priors rather than as proven consciousness-physics mechanisms.
 
 ## First Testable Claim
 
@@ -115,6 +150,8 @@ Do not claim yet:
 - consciousness enters the wavefunction,
 - organoids project mind into quantum matter,
 - a neural stream controls collapse,
+- Brain2Qwerty proves arbitrary thought reading,
+- SpanishBCBL proves quantum control,
 - a simulator result is a hardware result,
 - schedule optimization proves quantum consciousness.
 
@@ -124,9 +161,10 @@ The branch-comparison harness should evaluate Acer and Liris branches by this sp
 
 1. Does it preserve the hard-feedback scheduling pattern from ComPilot?
 2. Does it respect the Nature interferometer physics boundary?
-3. Does it respect the Brain2Qwerty neural-decoding boundary?
-4. Does it use Asolaria-style compact receipts and claim gates without overclaiming?
-5. Does it improve measurable outcomes?
+3. Does it respect the Brain2Qwerty / SpanishBCBL neural-decoding boundary?
+4. Does it keep raw neural data out of Git and operate on derived event/features first?
+5. Does it use Asolaria-style compact receipts and claim gates without overclaiming?
+6. Does it improve measurable outcomes?
 
 ## Liris Implementation Update — 2026-07-01
 

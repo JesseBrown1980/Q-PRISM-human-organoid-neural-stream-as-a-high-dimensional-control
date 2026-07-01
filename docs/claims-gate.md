@@ -11,7 +11,7 @@
 ## Allowed Current Claims
 
 - `PRIMARY_SOURCE`: large sodium nanoparticle matter-wave interference has been reported in Nature.
-- `PRIMARY_SOURCE`: Brain2Qwerty reports constrained non-invasive MEG typed-sentence decoding with public code and a public v1 dataset.
+- `PRIMARY_SOURCE`: Brain2Qwerty reports constrained non-invasive MEG typed-sentence decoding with public code; SpanishBCBL provides the public MEG+EEG typing dataset under CC BY-NC 4.0.
 - `HYPOTHESIS`: neural/prism streams may be useful high-dimensional controls for schedule selection.
 - `MEASURED`: simulator outputs and policy comparisons produced by this repository after tests are run.
 
@@ -24,6 +24,7 @@ Do not claim from this repo alone:
 - Q-PRISM proves quantum consciousness,
 - Brain2Qwerty proves arbitrary thought reading,
 - Brain2Qwerty proves neural control of a quantum system,
+- SpanishBCBL raw M/EEG data is small enough or appropriate to commit into this repo,
 - a human subject's conscious stream has been physically projected into sodium nanoparticle superposition.
 
 ## First Strong Claim Target

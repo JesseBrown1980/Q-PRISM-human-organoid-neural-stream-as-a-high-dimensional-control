@@ -5,7 +5,7 @@ Human/organoid/neural streams as high-dimensional control signals for macroscopi
 This repository starts from a conservative scientific frame:
 
 - A 2026 Nature matter-wave interferometry result reports quantum interference of sodium nanoparticles containing more than 7,000 atoms and masses greater than 170,000 Da, with macroscopicity `mu = 15.5`: <https://www.nature.com/articles/s41586-025-09917-9>
-- Meta/BCBL Brain2Qwerty v2 reports non-invasive MEG typed-sentence decoding with public training code and a public v1 dataset: <https://ai.meta.com/blog/brain2qwerty-brain-ai-human-communication/>
+- Meta/BCBL Brain2Qwerty v2 reports non-invasive MEG typed-sentence decoding, and the public SpanishBCBL/DECOMEG dataset provides MEG+EEG typing recordings under CC BY-NC 4.0: <https://huggingface.co/datasets/bcbl190626/SpanishBCBL>
 - Neither result proves consciousness couples to a quantum experiment.
 - Q-PRISM is the testable bridge: use neural/consciousness-derived streams as high-dimensional control and hypothesis signals, then compare them against random and classical optimizers on interferometer prediction/control tasks.
 
@@ -46,7 +46,7 @@ so the lawful controls are middle-grating power, velocity-window selection, mass
 2. **Prism layer**
    - Converts neural/semantic/time-series input into high-dimensional control proposals.
    - Brain2Qwerty anchors the first real neural-language path: constrained typed-sentence MEG/EEG decoding, not arbitrary thought reading.
-   - Starts with deterministic synthetic streams and public/offline neural-language data; later accepts live EEG, BCI, organoid, or Neuralink-style streams only under explicit ethics and consent gates.
+   - Starts with deterministic synthetic streams and public/offline SpanishBCBL-derived event features; later accepts live EEG, BCI, organoid, or Neuralink-style streams only under explicit ethics and consent gates.
 
 3. **Experiment layer**
    - Runs blinded schedule comparisons:
@@ -65,6 +65,7 @@ so the lawful controls are middle-grating power, velocity-window selection, mass
 npm test
 npm run simulate
 npm run compare
+npm run quant:spanishbcbl
 ```
 
 Current measured simulator output on the Liris branch:
@@ -77,7 +78,8 @@ QPRISM_COUPLING_SWEEP|schema=qprism.coupling_sweep.v1|seeds=24|steps=32|self_val
 ## Repository Map
 
 - `docs/source-triad.md` - how ComPilot, Nature 2026, Brain2Qwerty, and the Asolaria report fit together.
-- `docs/brain2qwerty-neural-decoding-anchor.md` - neural-stream decoding anchor and claims boundary.
+- docs/brain2qwerty-neural-decoding-anchor.md - neural-stream decoding anchor and claims boundary.
+- docs/spanishbcbl-stage2-integration-plan.md - no-raw-data Stage 2 plan for SpanishBCBL events/features.
 - `docs/spatial-talbot-lau-calibration.md` - the calibrated simulator boundary.
 - `docs/nature-2026-metal-cluster-interferometry.md` - physics anchor.
 - `docs/research-program.md` - staged Q-PRISM roadmap.
@@ -85,6 +87,9 @@ QPRISM_COUPLING_SWEEP|schema=qprism.coupling_sweep.v1|seeds=24|steps=32|self_val
 - `docs/ethics-and-human-subjects.md` - consent and safety gates.
 - `src/qprism-simulator.mjs` - dependency-free spatial Talbot-Lau simulator scaffold.
 - `src/qprism-control-policy.mjs` - deterministic schedule/control proposal utilities.
-- `src/qprism-experiment.mjs` - comparison and coupling-sweep harness.
+- src/qprism-experiment.mjs - comparison and coupling-sweep harness.
+- src/qprism-quant-chunk.mjs - SpanishBCBL metadata-to-quant control tuple probe, derived-only and raw-data-free.
+- host8/qprism_graphify_selector.rs - no-Node/no-JSON Host8 selector contract for Graphify V3 / HyperBEHCS 60D alignment.
+- host8/QPRISM-HOST8-GRAPHIFY-SELECTOR-2026-07-01.hbp - tuple-text selector-axis receipt, `json=0`, `agentterms_fedenv_fire=0`.
 - `test/qprism-smoke.test.mjs` - physics and policy smoke tests.
 - `test/qprism-experiment.test.mjs` - comparison and self-validation tests.

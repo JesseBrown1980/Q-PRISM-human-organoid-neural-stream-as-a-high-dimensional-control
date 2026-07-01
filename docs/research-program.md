@@ -35,12 +35,20 @@ Goal: verify that the prism layer is not just overfitting or leaking labels.
 
 ## Stage 2: Public Neural-Language Stream
 
-Start with public, offline Brain2Qwerty-style data before any live capture:
+Start with public, offline Brain2Qwerty / SpanishBCBL data before any live capture:
 
-- SpanishBCBL v1 MEG/EEG recordings and behavioral logs,
-- decoded typed-sentence embeddings,
-- semantic schedule priors derived from text,
+- SpanishBCBL MEG/EEG events and behavioral logs,
+- typed-sentence timing and keystroke timing summaries,
+- decoded or ground-truth typed-sentence embeddings,
+- semantic schedule priors derived from text and timing,
 - strict provenance and license tracking.
+
+Dataset handling rule:
+
+```text
+raw 262-280GB M/EEG data stays outside Git
+repo stores only derived events/features, schedule proposals, hashes, metrics, and receipts
+```
 
 Goal: test whether decoded or ground-truth typed-language streams improve schedule proposals over synthetic and random streams.
 
