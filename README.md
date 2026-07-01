@@ -90,6 +90,13 @@ benchmarked against the neural-prism arm.
 4. **Experiment** — three-arm blinded comparison (this build).
 5. **Claim gate** — [`docs/CLAIMS-GATE.md`](docs/CLAIMS-GATE.md).
 
+**Stage 2 — cube absorption** ([`docs/STAGE2-CUBE-ABSORPTION.md`](docs/STAGE2-CUBE-ABSORPTION.md)):
+`qprism/cube_absorb.py` represents a neural feature window as a fabric-addressable **3,200-byte
+cube tuple** + derived-only chunk (60D BEHCS selector; `raw_in_repo=0`), format-aligned to the
+shipped `combined-quant-engine` and Liris's `qprism-quant-chunk`. Drives the prism arm via
+`CubeSource`. Uses fabric/recall/atlas/graphify only as read/representation surfaces — never fires
+AgentTerms/FEDENV. Raw M/EEG stays on D:, sha-referenced; 280 GB download deferred to explicit go.
+
 ## Bilateral build
 
 Built in parallel by **Acer** (this branch, numpy/scipy, calibrated spatial model) and

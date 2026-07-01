@@ -49,7 +49,9 @@ def decode(run: str) -> int:
 def schedule_id(schedule_dict: dict) -> str:
     """Deterministic BEHCS-1024 glyph id for a schedule (selector tuple).
     Quantises params, SHA-256s the canonical JSON, folds to the 2^60 ceiling."""
-    q = {k: round(float(v), 9) for k, v in sorted(schedule_dict.items())}
+    def norm(v):
+        return round(float(v), 9) if isinstance(v, (int, float)) else str(v)
+    q = {k: norm(v) for k, v in sorted(schedule_dict.items())}
     digest = hashlib.sha256(json.dumps(q, separators=(",", ":")).encode()).digest()
     val = int.from_bytes(digest[:8], "big") % CEILING     # fold into 60-bit address space
     return "HG1024:QPRISM:" + encode(val)
