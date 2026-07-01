@@ -98,6 +98,35 @@ pub fn bh_render(digits: &[u16]) -> String {
     digits.iter().map(|d| d.to_string()).collect::<Vec<_>>().join(".")
 }
 
+// Lossless transcode between representation LEVELS (the comb: separate -> recombine, 0 loss).
+// 256-level (8-bit bytes) <-> 1024-level (10-bit symbols). A bijection; no info created or lost
+// (referential/coherent, NOT compression below entropy). 4 symbols pack 5 bytes; 3200 B = 2560 symbols.
+fn mask(nbits: u32) -> u32 { if nbits == 0 { 0 } else { (1u32 << nbits) - 1 } }
+
+pub fn transcode_256_to_1024(data: &[u8]) -> Vec<u16> {
+    let (mut bits, mut nbits): (u32, u32) = (0, 0);
+    let mut out = Vec::new();
+    for &b in data {
+        bits = (bits << 8) | b as u32; nbits += 8;
+        while nbits >= 10 { nbits -= 10; out.push(((bits >> nbits) & 0x3FF) as u16); }
+        bits &= mask(nbits);   // drop already-emitted high bits (keep residual)
+    }
+    if nbits > 0 { out.push(((bits << (10 - nbits)) & 0x3FF) as u16); }
+    out
+}
+
+pub fn transcode_1024_to_256(symbols: &[u16], nbytes: usize) -> Vec<u8> {
+    let (mut bits, mut nbits): (u32, u32) = (0, 0);
+    let mut out = Vec::new();
+    for &s in symbols {
+        bits = (bits << 10) | (s as u32 & 0x3FF); nbits += 10;
+        while nbits >= 8 { nbits -= 8; out.push(((bits >> nbits) & 0xFF) as u8); }
+        bits &= mask(nbits);   // drop already-emitted high bits (keep residual)
+    }
+    out.truncate(nbytes);
+    out
+}
+
 pub const GRAPHIFY_SCHEMA: &str = "ASOLARIA-GRAPHIFY-V3-HYPERBEHCS-60D";
 pub const SELECTOR_CONSTRAINT: &str = "selector_constraint:hyperbehcs-selector-router-60d";
 pub const SELECTOR_AXES: [&str; 11] = [
@@ -231,6 +260,16 @@ mod tests {
             assert!(row.contains(g), "missing gate {g}");
         }
         assert_eq!(SELECTOR_AXES.len(), 11);
+    }
+
+    #[test]
+    fn roundtrip_lossless_transcode_comb_coherence() {
+        // a cube tuple: 3200 bytes -> 2560 base-1024 symbols -> 3200 bytes, byte-identical
+        let tuple: Vec<u8> = (0..3200u32).map(|i| ((i.wrapping_mul(2654435761)) >> 13) as u8).collect();
+        let down = transcode_256_to_1024(&tuple);       // separate into glyph lines (comb forward)
+        let up = transcode_1024_to_256(&down, tuple.len()); // recombine (comb backward)
+        assert_eq!(down.len(), 2560);                   // 25600 bits / 10
+        assert_eq!(up, tuple);                          // 0 loss on our own artifact
     }
 
     #[test]

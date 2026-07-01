@@ -88,6 +88,14 @@ Honest tag: this is **addressing capacity** — the address form is expandable a
 operator-gated (E=0). (`pixels_first` traces to the paper's spacetime-pixels; the frontend only
 projects that discrete pixel substrate.)
 
+## Round-trip proof (comb coherence, lossless transcode)
+The claim "losslessly transcodable across levels" is proven on our own artifact:
+`transcode_256_to_1024` separates a cube's 3200-byte tuple into **2,560 base-1024 glyph "lines"**
+(25,600 bits ÷ 10; the "4 symbols ⇄ 5 bytes" packing), and `transcode_1024_to_256` recombines them —
+**byte-identical, sha256-identical, 0 loss** (Rust `roundtrip_lossless_transcode_comb_coherence` +
+Python `roundtrip_proof`, and Rust==Python symbol-identical). This is the comb: separate → recombine,
+coherent — a **bijection between representation levels**, NOT compression below entropy.
+
 ## Gates
 - **No raw M/EEG in git.** `raw_in_repo=0`, `derived_only=1` on every chunk; raw stays on D:, sha-referenced.
 - **License:** CC-BY-NC-4.0 — research/non-commercial only.

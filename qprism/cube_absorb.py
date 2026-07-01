@@ -112,6 +112,43 @@ def bh_render(digits: list) -> str:
     return ".".join(str(x) for x in digits)
 
 
+# ---- Lossless transcode between representation LEVELS (the comb: separate -> recombine, 0 loss). ----
+# 256-level (8-bit bytes) <-> 1024-level (10-bit symbols). A bijection: no information created or lost
+# (referential/coherent, NOT compression below entropy). 4 symbols pack 5 bytes; 3200 B = 2560 symbols.
+def transcode_256_to_1024(data: bytes) -> list:
+    """Separate a byte stream into evenly-valued 10-bit glyph 'lines' (the comb, forward)."""
+    bits = nbits = 0
+    out = []
+    for b in data:
+        bits = (bits << 8) | b; nbits += 8
+        while nbits >= 10:
+            nbits -= 10
+            out.append((bits >> nbits) & 0x3FF)
+    if nbits:
+        out.append((bits << (10 - nbits)) & 0x3FF)   # pad the final partial symbol
+    return out
+
+def transcode_1024_to_256(symbols: list, nbytes: int) -> bytes:
+    """Recombine the glyph lines back into the original bytes (the comb, backward)."""
+    bits = nbits = 0
+    out = bytearray()
+    for s in symbols:
+        bits = (bits << 10) | (s & 0x3FF); nbits += 10
+        while nbits >= 8:
+            nbits -= 8
+            out.append((bits >> nbits) & 0xFF)
+    return bytes(out[:nbytes])
+
+def roundtrip_proof(tuple_bytes: bytes) -> dict:
+    """Prove comb coherence on our own artifact: bytes -> 1024-level -> bytes, byte-identical."""
+    down = transcode_256_to_1024(tuple_bytes)             # forward: separate
+    up = transcode_1024_to_256(down, len(tuple_bytes))    # backward: recombine
+    return {"orig_bytes": len(tuple_bytes), "symbols_1024": len(down),
+            "orig_sha256": hashlib.sha256(tuple_bytes).hexdigest(),
+            "recovered_sha256": hashlib.sha256(up).hexdigest(),
+            "byte_identical": up == tuple_bytes}
+
+
 def _lanes_from_window(win: np.ndarray) -> np.ndarray:
     feat = win.mean(axis=0) if win.ndim == 2 else np.asarray(win, float).ravel()
     rng = np.random.default_rng(_PROJ_SEED)

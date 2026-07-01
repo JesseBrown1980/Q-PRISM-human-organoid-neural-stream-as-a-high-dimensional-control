@@ -111,3 +111,12 @@ def test_space_expandable_inject_between():
     row = absorb_window(_fixture_window(), frame=3).hbp_row()
     assert "space_expandable=1" in row and "frame=3" in row
     assert "inject_between=bh_digital_expansion" in row and "bh_prefix=" in row
+
+
+def test_roundtrip_lossless_transcode_comb_coherence():
+    from qprism.cube_absorb import roundtrip_proof, absorb_window
+    ch = absorb_window(_fixture_window(), subject="S5")
+    p = roundtrip_proof(ch.tuple)
+    assert p["byte_identical"] is True                       # 0 loss on our own artifact
+    assert p["orig_sha256"] == p["recovered_sha256"]         # sha-identical recovery
+    assert p["orig_bytes"] == 3200 and p["symbols_1024"] == 2560   # 25600 bits = 2560 x 10-bit
