@@ -5,29 +5,43 @@ the 60D BEHCS-1024 tuple space — and the addressed representation **is** the c
 represent + address + derived-digest, with the raw preserved once by sha256 (referenced, not
 reconstructed). This is not lossless magic and not a Shannon violation; it is addressing.
 
+**Kernel-native (json=0, no Node):** each cube is a node keyed by the **Host-8 8-byte handle**
+(`handle8` = FNV-1a-64), byte-identical to `tools/graphify/graphify.py`, so cubes are nodes in the
+**same 60D atlas graph** both colonies use. The carrier is a **json=0 HBP tuple row**, not JSON
+(JSON is cold-debug only, per the HyperBEHCS adapter rule).
+
 ```
 raw M/EEG (D:, referenced by sha256)
    → derived feature window            (MNE / Brain2Qwerty `studies`, in WSL/Ubuntu on D:)
    → canonical 3200-byte QUANT TUPLE   (turbo 1024·int8 + signs 128 + zeta 1024 + hist 256·u32)
-   → derived-only CubeChunk record     (metadata + 60D selector + digests; raw_in_repo=0)
-   → CubeSource → prism arm → blinded harness
+   → kernel-native cube node           (handle8 Host-8 PK + glyph + 60D selector envelope; raw_in_repo=0)
+   → json=0 HBP tuple row              (CubeSource → prism arm → blinded harness)
 ```
 
-## Canonical format (aligned to the shipped engine)
+## Canonical format (aligned to the shipped engine + graphify)
 `TUPLE_BYTES = 3200`, matching `D:/asolaria-combined-quant-2026-06-15/combined-quant-engine.mjs`
 (`turbo 1024 + signs 128 + zeta 1024 + hist 1024`) and Liris's `qprism-quant-chunk` (3200 B, D=1024).
-`turbo`/`signs`/`hist` are computed faithfully; the per-lane `zeta` is a **layout-compatible
-stand-in** pending byte-parity with the canonical `zetaClassify` — a **bilateral verify** step.
+`turbo`/`signs`/`hist` faithful; per-lane `zeta` is a **layout-compatible stand-in** pending
+byte-parity with the canonical `zetaClassify` — a **bilateral verify** step.
 
-Example derived chunk (from `qprism.cube_absorb.absorb_window`, synthetic fixture):
-```json
-{ "dataset_id": "bcbl190626/SpanishBCBL", "license": "CC-BY-NC-4.0",
-  "subject": "S5", "session": "1", "modality": "MEG",
-  "window_start_s": 12.5, "window_dur_s": 0.5, "n_samples": 25,
-  "feature_digest": "5d8b102753b7fcfb", "selector": "HG1024:QPRISM:…60D-glyphs…",
-  "tuple_sha16": "969d2b5e47e97e3e", "source_sha256": "…referenced-on-D",
-  "raw_in_repo": 0, "derived_only": 1, "tuple_bytes": 3200 }
+**Selector envelope** (graphify `sel:*`, verified byte-identical `handle8`/`glyph`):
+room(D37) · handle8(D16) · to_pid[60-tuple](D16) · PortLabel(D13) · domain[1/8](D37) ·
+tier[1/6](D37) · executor(D1) · signgate(D11) · runtime/E-axis(D12).
+
+Example kernel-native cube row (json=0, `qprism.cube_absorb.absorb_window`, synthetic fixture):
 ```
+QPRISMCUBE|handle8=5bd9437e2a3fe005|glyph=gly-stcI|node=qprism/cube/bcbl190626/SpanishBCBL/S5/1/12.5/5d8b1027…
+|dataset=bcbl190626/SpanishBCBL|license=CC-BY-NC-4.0|subject=S5|session=1|modality=MEG
+|win_start_s=12.5|win_dur_s=0.5|n_samples=25|feat_sha16=5d8b102753b7fcfb|tuple_sha16=969d2b5e47e97e3e
+|tuple_bytes=3200|source_sha256=…referenced-on-D|sel_room=qprism/SpanishBCBL/S5|sel_topid=HG1024:QPRISM:stcI
+|sel_portlabel=qprism.cube|sel_domain=vector|sel_tier=RESTRICTED|sel_executor=host8.quant.cube-absorb
+|sel_signgate=UNSIGNED|sel_runtime=staged|raw_in_repo=0|derived_only=1|json=0
+```
+
+**Metal-kernel note (honest):** this delivers the kernel-native *format* — a cube BINDS to the
+Rust 8-byte Host-8 metal kernel by its `handle8` PK. Actually *executing* the quant ON the metal
+kernel (vs the Python reference here) is the operator-gated migration, not fired: `sel_runtime=staged`,
+`sel_signgate=UNSIGNED`, **E=0**.
 
 ## Phases
 

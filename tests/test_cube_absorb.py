@@ -1,11 +1,10 @@
-"""Cube-absorption tests: the 3200-byte canonical tuple, derived-only records, and the
-CubeSource plugging into the prism arm."""
+"""Cube-absorption tests: canonical 3200-byte tuple, kernel-native json=0 HBP row, Host-8
+handle parity with graphify, graphify-60D selector envelope, and CubeSource -> prism arm."""
 import numpy as np
 from qprism.physics import Apparatus, observe
 from qprism.sources import PrismSource, denormalize
 from qprism.cube_absorb import (absorb_window, quant_tuple, cube_to_control,
-                                 CubeSource, TUPLE_BYTES)
-from qprism.neural_sources import RecordedFeatureSource
+                                 CubeSource, TUPLE_BYTES, handle8, glyphword)
 
 
 def _fixture_window(seed=1, T=25, F=64):
@@ -18,18 +17,35 @@ def test_tuple_is_canonical_3200_bytes():
     assert len(quant_tuple(_fixture_window())) == TUPLE_BYTES == 3200
 
 
-def test_absorb_is_derived_only_and_addressed():
+def test_handle8_matches_graphify_fnv1a64():
+    # byte-identical Host-8 8-byte PK (FNV-1a 64-bit) -> hex 16 chars
+    assert len(handle8("qprism/cube/x")) == 16          # 8-byte PK -> 16 hex chars
+    # verify the exact FNV-1a-64 algorithm (byte-identical to graphify.py)
+    ref = 0xcbf29ce484222325
+    for ch in b"a":
+        ref = ((ref ^ ch) * 0x100000001b3) & 0xffffffffffffffff
+    assert handle8("a") == format(ref, "016x")
+    assert glyphword("a").startswith("gly-")
+
+
+def test_hbp_row_is_json0_and_kernel_native():
     ch = absorb_window(_fixture_window(), subject="S5", session="1", window_start_s=12.5)
-    rec = ch.record()
-    assert rec["raw_in_repo"] == 0 and rec["derived_only"] == 1
-    assert rec["selector"].startswith("HG1024:QPRISM:")     # 60D BEHCS address
-    assert len(rec["feature_digest"]) == 16 and len(rec["tuple_sha16"]) == 16
-    assert "tuple" not in rec                                # raw bytes never serialized into the record
+    row = ch.hbp_row()
+    assert row.startswith("QPRISMCUBE|") and row.endswith("|json=0")
+    assert "{" not in row and "}" not in row and '"' not in row     # no JSON carrier
+    assert f"handle8={ch.handle8}" in row and len(ch.handle8) == 16  # Host-8 8-byte PK present
+    assert "raw_in_repo=0" in row and "derived_only=1" in row
+    # graphify-60D selector envelope axes present
+    for axis in ("sel_room", "sel_topid", "sel_portlabel", "sel_domain", "sel_tier",
+                 "sel_executor", "sel_signgate", "sel_runtime"):
+        assert f"|{axis}=" in row
+    assert "sel_runtime=staged" in row and "sel_signgate=UNSIGNED" in row  # E=0, uncosigned
 
 
 def test_deterministic():
     w = _fixture_window(3)
-    assert quant_tuple(w) == quant_tuple(w)                  # same window -> same tuple
+    assert quant_tuple(w) == quant_tuple(w)
+    assert absorb_window(w).handle8 == absorb_window(w).handle8
 
 
 def test_cube_source_drives_prism_arm():
@@ -47,6 +63,5 @@ def test_cube_source_drives_prism_arm():
 
 
 def test_control_vector_valid():
-    ch = absorb_window(_fixture_window())
-    v = cube_to_control(ch)
+    v = cube_to_control(absorb_window(_fixture_window()))
     assert v.shape == (5,) and np.all((v >= 0) & (v <= 1))
