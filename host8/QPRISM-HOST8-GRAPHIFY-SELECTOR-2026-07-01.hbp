@@ -1,6 +1,6 @@
 QPRISMHOST8HDR|schema=qprism.host8.graphify_selector.v1|date=2026-07-01|seat=liris|frame=60D_PLUS_HYPERBEHCS|graphify_schema=ASOLARIA-GRAPHIFY-V3-HYPERBEHCS-60D|json=0
-QPRISMHOST8LAW|node_runtime=kernel_contract_not_spawned|node=0|json=0
-QPRISMHOST8LAW|nodejs=0|json_object=0|hot_path=HBP_HBI_TUPLE_TEXT|pixels_first=1|json=0
+QPRISMHOST8LAW|node_runtime=kernel_contract_not_spawned|node=0|hot_path=HBP_HBI_TUPLE_TEXT|pixels_first=1|frontend=raw_projection_inert|json=0
+QPRISMHOST8LAW|nodejs=0|json_object=0|hot_path=HBP_HBI_TUPLE_TEXT|pixels_first=1|frontend=raw_projection_inert|json=0
 QPRISMHOST8LAW|agentterms_fedenv_fire=0|dispatch=0|provider_fanout=0|hardware_fire=0|json=0
 QPRISMHOST8HANDLE|field=source|bytes=8|derivation=sha256_prefix_8|role=raw_or_feature_source_reference|json=0
 QPRISMHOST8HANDLE|field=tuple|bytes=8|derivation=sha256_prefix_8|role=quant_tuple_reference|json=0

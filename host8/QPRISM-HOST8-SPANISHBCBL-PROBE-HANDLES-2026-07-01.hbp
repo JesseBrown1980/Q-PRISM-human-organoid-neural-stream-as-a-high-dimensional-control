@@ -1,5 +1,5 @@
 QPRISMHOST8SAMPLEHDR|schema=qprism.host8.graphify_selector.sample.v1|date=2026-07-01|seat=liris|source=D:/qprism-data/spanishbcbl-quant-probe|frame=60D_PLUS_HYPERBEHCS|json=0
 QPRISMHOST8SAMPLE|source_sha256=0ebf9ac4c41cb33d5d1acb071f4e06c8314e83d38088ec1357f36fb786b226b2|tuple_sha256=7be9d49b3af31036ccce106658588309d8fb808aaf546cbf7c92baaa1cd3767d|tuple_bytes=3200|raw_in_repo=0|derived_only=1|json=0
 QPRISMHOST8NODE|source_handle8=0ebf9ac4c41cb33d|tuple_handle8=7be9d49b3af31036|graphify_id=qprism_cube:7be9d49b3af31036|node_handle8=5edd3a45544437d4|pk_algo=fnv1a64|graphify_schema=ASOLARIA-GRAPHIFY-V3-HYPERBEHCS-60D|json=0
-QPRISMHOST8NODELAW|selector_constraint=selector_constraint:hyperbehcs-selector-router-60d|axis_count=11|agentterms_fedenv_fire=0|dispatch=0|node_runtime=0|json=0
+QPRISMHOST8NODELAW|selector_constraint=selector_constraint:hyperbehcs-selector-router-60d|axis_count=11|agentterms_fedenv_fire=0|dispatch=0|node_runtime=0|hot_path=HBP_HBI_TUPLE_TEXT|pixels_first=1|frontend=raw_projection_inert|json=0
 QPRISMACTIVEGLYPH|handle8=5edd3a45544437d4|geometry=graphify60d|behavior=represent_address|compile=0|interpret=0|fire=0|json=0

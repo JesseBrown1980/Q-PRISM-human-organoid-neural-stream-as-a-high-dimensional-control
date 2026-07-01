@@ -64,6 +64,8 @@ fn hex_nibble(b: u8) -> Result<u8, &'static str> {
 pub const GRAPHIFY_SCHEMA: &str = "ASOLARIA-GRAPHIFY-V3-HYPERBEHCS-60D";
 pub const GRAPHIFY_FRAME: &str = "60D_PLUS_HYPERBEHCS";
 pub const SELECTOR_CONSTRAINT: &str = "selector_constraint:hyperbehcs-selector-router-60d";
+pub const HOT_PATH: &str = "HBP_HBI_TUPLE_TEXT";
+pub const FRONTEND_PROJECTION: &str = "raw_projection_inert";
 
 pub const SELECTOR_AXES: [&str; 11] = [
     "selector_axis:d-axis-tuples",
@@ -104,6 +106,13 @@ impl QPrismCubeSelector {
 
     pub fn node_hex16(&self) -> String { self.node.hex_string() }
 
+    pub fn law_row(&self) -> String {
+        format!(
+            "QPRISMHOST8LAW|hot_path={}|pixels_first=1|frontend={}|node_runtime=kernel_contract_not_spawned|nodejs=0|json_object=0|agentterms_fedenv_fire=0|dispatch=0|provider_fanout=0|hardware_fire=0|json=0",
+            HOT_PATH, FRONTEND_PROJECTION
+        )
+    }
+
     pub fn active_glyph_row(&self) -> String {
         format!(
             "QPRISMACTIVEGLYPH|handle8={}|geometry=graphify60d|behavior=represent_address|compile=0|interpret=0|fire=0|json=0",
@@ -138,6 +147,7 @@ mod tests {
         assert_eq!(GRAPHIFY_FRAME, "60D_PLUS_HYPERBEHCS");
         assert_eq!(sel.graphify_axis_count(), 11);
         assert_eq!(sel.graphify_id, "qprism_cube:7be9d49b3af31036");
+        assert!(sel.law_row().contains("|hot_path=HBP_HBI_TUPLE_TEXT|pixels_first=1|frontend=raw_projection_inert|"));
         assert_eq!(sel.node_hex16(), "5edd3a45544437d4");
         assert!(!sel.raw_in_repo);
         assert!(!sel.execution_allowed());

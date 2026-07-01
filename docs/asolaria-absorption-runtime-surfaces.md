@@ -49,3 +49,5 @@ A derived cube-level neural/event signature improved or failed to improve schedu
 The selector-alignment lane is `json=0`: Q-PRISM emits HBP/HBI tuple rows and an 8-byte Host8 graph node primary key derived by `fnv1a64(graphify_id)`. The local JS probe can remain a smoke-test scaffold, but the Graphify/Atlas convergence target is the Host8/on-metal contract in `host8/qprism_graphify_selector.rs` plus `host8/QPRISM-HOST8-GRAPHIFY-SELECTOR-2026-07-01.hbp`.
 
 This preserves the Graphify V3 selector constraint `selector_constraint:hyperbehcs-selector-router-60d` and all 11 required selector axes. It does not spawn a process, fire AgentTerms/FEDENV, or claim Asolaria OS kernel materialization.
+
+Pixels-first backend rule: hot_path=HBP_HBI_TUPLE_TEXT|pixels_first=1|frontend=raw_projection_inert. The backend cube is the representation; the frontend is only an inert raw pixel projection of it, with no logic and no execution authority.
