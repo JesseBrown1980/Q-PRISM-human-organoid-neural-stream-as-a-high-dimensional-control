@@ -10,14 +10,15 @@ The first win condition is not metaphysical. It is operational:
 
 ## Stage 0: Simulator
 
-Build a sodium-cluster interferometer simulator with:
+Build a sodium-cluster spatial Talbot-Lau interferometer simulator with:
 
 - mass and velocity inputs,
 - de Broglie wavelength calculation,
 - grating period and spacing,
-- laser phase/power controls,
-- decoherence and thermal noise knobs,
-- fringe visibility and phase outputs.
+- G2 laser power controls,
+- velocity and mass selection windows,
+- decoherence, flux, and SNR knobs,
+- fringe visibility and Talbot `rho` outputs.
 
 Goal: prove the software loop can run blinded policy comparisons.
 
@@ -32,19 +33,31 @@ Feed synthetic high-dimensional streams into the prism:
 
 Goal: verify that the prism layer is not just overfitting or leaking labels.
 
-## Stage 2: Human Non-Invasive Stream
+## Stage 2: Public Neural-Language Stream
+
+Start with public, offline Brain2Qwerty-style data before any live capture:
+
+- SpanishBCBL v1 MEG/EEG recordings and behavioral logs,
+- decoded typed-sentence embeddings,
+- semantic schedule priors derived from text,
+- strict provenance and license tracking.
+
+Goal: test whether decoded or ground-truth typed-language streams improve schedule proposals over synthetic and random streams.
+
+## Stage 3: Human Non-Invasive Stream
 
 Use low-risk, consented signals:
 
 - EEG,
+- MEG where available,
 - eye movement,
 - breath pacing,
 - heart-rate variability,
 - typed conscious stream.
 
-Goal: compare neural/prism schedule proposals against baselines.
+Goal: compare neural/prism schedule proposals against baselines while preserving the boundary that typed-sentence decoding is not arbitrary thought reading.
 
-## Stage 3: Biological/Organoid Interface
+## Stage 4: Biological/Organoid Interface
 
 Only after ethics approval and clear safety constraints:
 
@@ -55,20 +68,18 @@ Only after ethics approval and clear safety constraints:
 
 Goal: test whether biological high-dimensional dynamics provide useful control priors.
 
-## Stage 4: Hardware Interferometer
+## Stage 5: Hardware Interferometer
 
 Use a real matter-wave interferometer only after simulator and blinded offline analysis pass.
 
 Allowed control channels:
 
-- grating phase,
-- grating timing,
-- laser power,
+- G2 laser power,
 - velocity-bin selection,
+- mass-bin selection,
 - scan order,
 - detector analysis settings.
 
 Disallowed claim without direct evidence:
 
 - direct consciousness projection into a quantum state.
-

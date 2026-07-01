@@ -1,6 +1,6 @@
-# Source Triad
+# Source Stack
 
-Q-PRISM should be read as the intersection of three sources, not as a free-floating consciousness claim.
+Q-PRISM should be read as the intersection of four sources, not as a free-floating consciousness claim.
 
 ## 1. Agentic auto-scheduling
 
@@ -55,7 +55,30 @@ Why it matters for Q-PRISM:
 - Q-PRISM schedules lawful controls around a spatial Talbot-Lau matter-wave interferometer: middle-grating power, velocity-bin selection, mass-bin selection, scan order, flux/SNR, and Talbot `rho`.
 - The Nature result does not imply consciousness coupling. It gives a sensitive experimental platform where schedule quality can be tested.
 
-## 3. Asolaria local-first self-refining substrate
+## 3. Non-invasive brain-to-text decoding
+
+Primary sources:
+
+- Meta blog: <https://ai.meta.com/blog/brain2qwerty-brain-ai-human-communication/>
+- Code: <https://github.com/facebookresearch/brain2qwerty>
+- v2 paper PDF: <https://facebookresearch.github.io/brain2qwerty/assets/brain2qwerty_v2.pdf>
+- v1 dataset: <https://huggingface.co/datasets/bcbl190626/SpanishBCBL>
+
+Paper and repo facts verified from primary surfaces:
+
+- Brain2Qwerty v2 is a non-invasive MEG typed-sentence decoder.
+- v2 uses about 22,000 sentences from 9 participants, about 10 hours each.
+- reported v2 performance is WER 39% on average, equivalent to about 61% word accuracy; best participant had half of decoded sentences at one word error or less.
+- the released code includes `brain2qwerty_v1/` and `brain2qwerty_v2/`.
+- the public v1 SpanishBCBL dataset is CC BY-NC 4.0; v2 data is not public in the GitHub README at this time.
+
+Why it matters for Q-PRISM:
+
+- It grounds the neural-stream premise in a real non-invasive language-decoding system.
+- It supports typed-language or attempted-typing neural streams as the first realistic input adapter.
+- It does **not** prove arbitrary thought reading, consciousness transfer, or quantum control.
+
+## 4. Asolaria local-first self-refining substrate
 
 Local source:
 
@@ -77,7 +100,7 @@ Why it matters for Q-PRISM:
 
 ## Combined Research Sentence
 
-Q-PRISM is an agentic auto-scheduler for macroscopic quantum-interference experiments, using Asolaria-style compact receipts and claim gates, with neural/prism streams treated as high-dimensional schedule priors rather than as proven consciousness-physics mechanisms.
+Q-PRISM is an agentic auto-scheduler for macroscopic quantum-interference experiments, using Asolaria-style compact receipts and claim gates, with Brain2Qwerty-style neural-language streams treated as high-dimensional schedule priors rather than as proven consciousness-physics mechanisms.
 
 ## First Testable Claim
 
@@ -101,8 +124,10 @@ The branch-comparison harness should evaluate Acer and Liris branches by this sp
 
 1. Does it preserve the hard-feedback scheduling pattern from ComPilot?
 2. Does it respect the Nature interferometer physics boundary?
-3. Does it use Asolaria-style compact receipts and claim gates without overclaiming?
-4. Does it improve measurable outcomes?
+3. Does it respect the Brain2Qwerty neural-decoding boundary?
+4. Does it use Asolaria-style compact receipts and claim gates without overclaiming?
+5. Does it improve measurable outcomes?
+
 ## Liris Implementation Update — 2026-07-01
 
 The Liris branch corrected the first simulator from a generic toy phase model to a dependency-free spatial near-field Talbot-Lau scaffold. It is calibrated to the Nature operating point only:

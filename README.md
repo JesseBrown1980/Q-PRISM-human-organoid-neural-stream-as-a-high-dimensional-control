@@ -5,7 +5,8 @@ Human/organoid/neural streams as high-dimensional control signals for macroscopi
 This repository starts from a conservative scientific frame:
 
 - A 2026 Nature matter-wave interferometry result reports quantum interference of sodium nanoparticles containing more than 7,000 atoms and masses greater than 170,000 Da, with macroscopicity `mu = 15.5`: <https://www.nature.com/articles/s41586-025-09917-9>
-- That result does not prove consciousness couples to a quantum experiment.
+- Meta/BCBL Brain2Qwerty v2 reports non-invasive MEG typed-sentence decoding with public training code and a public v1 dataset: <https://ai.meta.com/blog/brain2qwerty-brain-ai-human-communication/>
+- Neither result proves consciousness couples to a quantum experiment.
 - Q-PRISM is the testable bridge: use neural/consciousness-derived streams as high-dimensional control and hypothesis signals, then compare them against random and classical optimizers on interferometer prediction/control tasks.
 
 ## Core Claim
@@ -44,7 +45,8 @@ so the lawful controls are middle-grating power, velocity-window selection, mass
 
 2. **Prism layer**
    - Converts neural/semantic/time-series input into high-dimensional control proposals.
-   - Starts with deterministic synthetic streams; later accepts EEG, BCI, organoid, or Neuralink-style streams only under explicit ethics and consent gates.
+   - Brain2Qwerty anchors the first real neural-language path: constrained typed-sentence MEG/EEG decoding, not arbitrary thought reading.
+   - Starts with deterministic synthetic streams and public/offline neural-language data; later accepts live EEG, BCI, organoid, or Neuralink-style streams only under explicit ethics and consent gates.
 
 3. **Experiment layer**
    - Runs blinded schedule comparisons:
@@ -74,7 +76,8 @@ QPRISM_COUPLING_SWEEP|schema=qprism.coupling_sweep.v1|seeds=24|steps=32|self_val
 
 ## Repository Map
 
-- `docs/source-triad.md` - how ComPilot, Nature 2026, and the Asolaria report fit together.
+- `docs/source-triad.md` - how ComPilot, Nature 2026, Brain2Qwerty, and the Asolaria report fit together.
+- `docs/brain2qwerty-neural-decoding-anchor.md` - neural-stream decoding anchor and claims boundary.
 - `docs/spatial-talbot-lau-calibration.md` - the calibrated simulator boundary.
 - `docs/nature-2026-metal-cluster-interferometry.md` - physics anchor.
 - `docs/research-program.md` - staged Q-PRISM roadmap.
