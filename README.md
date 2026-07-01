@@ -81,8 +81,12 @@ benchmarked against the neural-prism arm.
 1. **Physics** — spatial Talbot–Lau sim (this build). *Next:* full-curve calibration.
 2. **Prism** — Asolaria maps streams → HyperBEHCS selector tuples (`qprism/behcs.py`) →
    control proposals. Never claims "mind enters wavefunction."
-3. **Neural** — **synthetic first** (here). Non-invasive EEG/eye/breath/attention later;
-   organoid/Neuralink-class only much later, with IRB/consent, no shortcut.
+3. **Neural** — **pluggable source socket** (`qprism/neural_sources.py`,
+   [`docs/NEURAL-SOURCES.md`](docs/NEURAL-SOURCES.md)): `synthetic` (baseline) ·
+   `connectome` (C. elegans-scale graph dynamics, Wasiolek path) · `recorded` (real
+   non-invasive MEG/EEG features, Brain2Qwerty path — public data, no surgery/IRB).
+   Real data does **not** bypass the honest null. Organoid/Neuralink-class only much later,
+   with IRB/consent, no shortcut.
 4. **Experiment** — three-arm blinded comparison (this build).
 5. **Claim gate** — [`docs/CLAIMS-GATE.md`](docs/CLAIMS-GATE.md).
 
