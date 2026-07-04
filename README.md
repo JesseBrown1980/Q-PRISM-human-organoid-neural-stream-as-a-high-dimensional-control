@@ -94,5 +94,6 @@ QPRISM_COUPLING_SWEEP|schema=qprism.coupling_sweep.v1|seeds=24|steps=32|self_val
 - docs/ACTIVE-GLYPH-CARET-LENS.md - disputed CARET artifact handled only as gated active-symbolic-geometry design lens (`compile=0`, `interpret=0`, `fire=0`).
 - docs/DIGITAL-PHYSICS-EXPANDABLE-SPACE-LENS.md - Brown-Hilbert slice expansion law for injecting PID-addressable points between space/time slices (`json=0`, `fire=0`).
 - docs/PRISM-COMB-COLLISION-DUALITY-MAP.md - forward comb collision-avoidance and backward prism collision-causation map (`QPRISMCOMBPRISM`, `json=0`, `fire=0`).
+- docs/DOUBLE-BINARY-BLACK-HOLE-COMS-QUANT-PRISM.md - design bridge from the older double/binary black-hole consent capsule to Q-PRISM quant-control tuple receipts (`json=0`, `fire=0`).
 - `test/qprism-smoke.test.mjs` - physics and policy smoke tests.
 - `test/qprism-experiment.test.mjs` - comparison and self-validation tests.

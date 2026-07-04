@@ -14,6 +14,7 @@
 - `PRIMARY_SOURCE`: Brain2Qwerty reports constrained non-invasive MEG typed-sentence decoding with public code; SpanishBCBL provides the public MEG+EEG typing dataset under CC BY-NC 4.0.
 - `HYPOTHESIS`: neural/prism streams may be useful high-dimensional controls for schedule selection.
 - `MEASURED`: simulator outputs and policy comparisons produced by this repository after tests are run.
+- `DESIGN`: the Double Binary Black Hole Comms Quant Prism may be described as a consent/audit/revoke capsule plus Q-PRISM quant-control tuple receipt design, with `compile=0`, `interpret=0`, and `fire=0` until a harness proves it.
 
 ## Denied Current Claims
 
@@ -26,6 +27,7 @@ Do not claim from this repo alone:
 - Brain2Qwerty proves neural control of a quantum system,
 - SpanishBCBL raw M/EEG data is small enough or appropriate to commit into this repo,
 - a human subject's conscious stream has been physically projected into sodium nanoparticle superposition.
+- the Double Binary Black Hole Comms Quant Prism is a live communication tunnel, a consent bypass, a Hilbra-keyed benchmark, or proof of physical quantum projection.
 
 ## First Strong Claim Target
 
