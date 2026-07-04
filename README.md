@@ -104,6 +104,19 @@ shipped `combined-quant-engine` and Liris's `qprism-quant-chunk`. Drives the pri
 `CubeSource`. Uses fabric/recall/atlas/graphify only as read/representation surfaces — never fires
 AgentTerms/FEDENV. Raw M/EEG stays on D:, sha-referenced; 280 GB download deferred to explicit go.
 
+**Double Binary Black Hole Comms Quant Prism**
+([`docs/DOUBLE-BINARY-BLACK-HOLE-COMS-QUANT-PRISM.md`](docs/DOUBLE-BINARY-BLACK-HOLE-COMS-QUANT-PRISM.md)):
+design bridge from the older double/binary-black-hole consent capsule to Q-PRISM cube/quant
+tuples and HBI/HBP `json=0` receipts. `host8/dbbh_coms_quant_prism.rs` is the measured Rust receipt harness for the 64/256/1024/HyperBEHCS ladder and address-only crossing. This is not a live communications tunnel or hardware-fire claim.
+
+
+**Shadow Resolution Capstone**
+([`docs/SHADOW-RESOLUTION-CAPSTONE.md`](docs/SHADOW-RESOLUTION-CAPSTONE.md)):
+ties BrainJanus, eccentricity/deconvolution inference, Stage 2 cube absorption, and the
+DBBH-CQP Host8 harness into one bounded proof: paper shadows are lossy; Q-PRISM recovery is
+lossless only when retained content resolves by sha256/AGT and the BEHCS/HyperBEHCS codebooks
+round-trip. This is recovery by addressing and bijection, not compression below entropy.
+
 ## Bilateral build
 
 Built in parallel by **Acer** (this branch, numpy/scipy, calibrated spatial model) and
@@ -126,6 +139,12 @@ qprism/behcs.py     BEHCS-1024 selector-tuple identifiers
 run_experiment.py   CLI
 tests/              physics sanity + harness-integrity (honest-null + power) tests
 docs/CLAIMS-GATE.md what a "win" may and may not claim
+docs/DOUBLE-BINARY-BLACK-HOLE-COMS-QUANT-PRISM.md
+                    double/binary-black-hole consent capsule + Q-PRISM quant tuple design
+docs/SHADOW-RESOLUTION-CAPSTONE.md
+                    lossy paper shadows -> lossless addressed recovery, with Shannon boundary
+host8/dbbh_coms_quant_prism.rs
+                    Rust Host8 receipt harness: BEHCS 64/256/1024 + HyperBEHCS 60D
 ```
 
 *Credit: reframing from an untestable metaphysical claim to a blinded, simulator-grounded

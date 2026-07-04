@@ -28,3 +28,5 @@ claims are scoped to what the artifacts demonstrate, and strong words are define
 No lossless-beyond-entropy compression; no completion counts beyond backend throughput;
 no recursive/unbounded capability gain; no consciousness-, physics-, or hardware-transcending
 claims. Stating these is what makes the demonstrated core trustworthy.
+
+The Double Binary Black Hole Comms Quant Prism is `DESIGN` for live comms and `MEASURED_RUST_HARNESS` for its local Host8 receipt cell. The measured cell may claim: BEHCS-64 / BEHCS-256 / BEHCS-1024 byte round-trips, HyperBEHCS 60D store-backed addressing, HBI/HBP `json=0` rows, double/binary-black-hole two-sided consent, collapse, and audit-only replay. It is still not a live communication tunnel, not a Hilbra-keyed benchmark, not a consent bypass, not arbitrary mind reading, and not proof of physical consciousness or quantum projection.
