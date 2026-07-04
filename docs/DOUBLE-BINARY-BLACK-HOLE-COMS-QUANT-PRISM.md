@@ -105,3 +105,9 @@ rustc --test host8/dbbh_coms_quant_prism.rs -o /tmp/dbbh_cqp
 ```
 
 The tests cover unit (`sha256`, each BEHCS rung), suite (pairwise ladder groupoid), integration (two-sided consent across AI-to-AI, AI-to-hardware, hardware-to-hardware), and system (address-only crossing reconstructs only from the retained store; collapse yields audit-only replay). No live mic, display, network, Hilbra key, provider, or hardware route is needed for that first cell.
+
+See also `docs/SHADOW-RESOLUTION-CAPSTONE.md` for the paper-to-prism proof:
+the external papers support lossy shadow reconstruction, while this measured
+cell supports lossless recovery only through retained content, sha256/AGT
+addressing, BEHCS/HyperBEHCS round trips, and the double-binary consent
+capsule. It does not claim compression below entropy.
