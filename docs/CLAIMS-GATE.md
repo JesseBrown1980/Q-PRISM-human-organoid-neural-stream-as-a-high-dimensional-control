@@ -28,3 +28,10 @@ claims are scoped to what the artifacts demonstrate, and strong words are define
 No lossless-beyond-entropy compression; no completion counts beyond backend throughput;
 no recursive/unbounded capability gain; no consciousness-, physics-, or hardware-transcending
 claims. Stating these is what makes the demonstrated core trustworthy.
+
+The Double Binary Black Hole Comms Quant Prism document is `DESIGN` unless and until a
+simulator receipt harness is present and verified. It is not a live communication tunnel,
+not a Hilbra-keyed benchmark, not a consent bypass, not arbitrary mind reading, and not
+proof of physical consciousness or quantum projection. It may only claim a bounded
+architecture bridge: double/binary-black-hole consent capsule + Q-PRISM cube/quant tuple
++ HBI/HBP `json=0` receipt rows + hash-chain verification.

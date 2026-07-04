@@ -104,6 +104,12 @@ shipped `combined-quant-engine` and Liris's `qprism-quant-chunk`. Drives the pri
 `CubeSource`. Uses fabric/recall/atlas/graphify only as read/representation surfaces — never fires
 AgentTerms/FEDENV. Raw M/EEG stays on D:, sha-referenced; 280 GB download deferred to explicit go.
 
+**Double Binary Black Hole Comms Quant Prism**
+([`docs/DOUBLE-BINARY-BLACK-HOLE-COMS-QUANT-PRISM.md`](docs/DOUBLE-BINARY-BLACK-HOLE-COMS-QUANT-PRISM.md)):
+design bridge from the older double/binary-black-hole consent capsule to Q-PRISM cube/quant
+tuples and HBI/HBP `json=0` receipts. This is a bounded simulator/design cell, not a live
+communications tunnel or hardware-fire claim.
+
 ## Bilateral build
 
 Built in parallel by **Acer** (this branch, numpy/scipy, calibrated spatial model) and
@@ -126,6 +132,8 @@ qprism/behcs.py     BEHCS-1024 selector-tuple identifiers
 run_experiment.py   CLI
 tests/              physics sanity + harness-integrity (honest-null + power) tests
 docs/CLAIMS-GATE.md what a "win" may and may not claim
+docs/DOUBLE-BINARY-BLACK-HOLE-COMS-QUANT-PRISM.md
+                    double/binary-black-hole consent capsule + Q-PRISM quant tuple design
 ```
 
 *Credit: reframing from an untestable metaphysical claim to a blinded, simulator-grounded
