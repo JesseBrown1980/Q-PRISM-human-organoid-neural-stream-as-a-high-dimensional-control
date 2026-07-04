@@ -1,8 +1,6 @@
 # Double Binary Black Hole Comms Quant Prism
 
-Status: `DESIGN`, grounded in prior Asolaria artifacts. This is not a live
-communication channel, not a hardware-fire receipt, and not a claim that a
-human/organoid stream physically controls quantum collapse.
+Status: `DESIGN` for live communication and `MEASURED_RUST_HARNESS` for the local Host8 receipt cell in `host8/dbbh_coms_quant_prism.rs`. This is not a live communication channel, not a hardware-fire receipt, and not a claim that a human/organoid stream physically controls quantum collapse.
 
 ## Prior Art Anchors
 
@@ -77,9 +75,7 @@ raw residual -> content-addressed, not invented
 `CANON/DESIGN`: the quant-prism lane can be used as a design bridge between
 Q-PRISM control tuples and the older double black hole security capsule.
 
-`MEASURED`: the repo has a quant tuple/cube generator, HBP `json=0` rows,
-simulator tests, and a documented representation-comb round-trip proof on a
-Q-PRISM-sized tuple.
+`MEASURED`: the repo has a quant tuple/cube generator, HBP `json=0` rows, simulator tests, a documented representation-comb round-trip proof on a Q-PRISM-sized tuple, and a Rust Host8 receipt harness whose Linux `rustc --test` run passed 6/6 tests.
 
 `UNVERIFIED`: there is no measured live double-black-hole comms tunnel in this
 repo yet, no Hilbra-keyed cross-machine benchmark here, and no evidence from
@@ -91,7 +87,7 @@ hole rule strengthens consent and revocation; it does not weaken them.
 
 ## First Buildable Cell
 
-The first implementation should be a simulator-only receipt harness:
+The first implementation is now a simulator-only Rust receipt harness:
 
 1. Build a sender-side Q-PRISM cube/quant tuple from derived/cold metadata.
 2. Wrap it in a double-black-hole session capsule descriptor.
@@ -100,5 +96,12 @@ The first implementation should be a simulator-only receipt harness:
 5. Collapse the session capsule and prove replay is audit-only unless both
    sides arm a fresh capsule.
 
-No live mic, display, network, Hilbra key, provider, or hardware route is needed
-for that first cell.
+The harness lives at `host8/dbbh_coms_quant_prism.rs` and passed on the Liris Ubuntu lane with:
+
+```text
+rustc --test host8/dbbh_coms_quant_prism.rs -o /tmp/dbbh_cqp
+/tmp/dbbh_cqp --nocapture
+# 6 passed; 0 failed
+```
+
+The tests cover unit (`sha256`, each BEHCS rung), suite (pairwise ladder groupoid), integration (two-sided consent across AI-to-AI, AI-to-hardware, hardware-to-hardware), and system (address-only crossing reconstructs only from the retained store; collapse yields audit-only replay). No live mic, display, network, Hilbra key, provider, or hardware route is needed for that first cell.

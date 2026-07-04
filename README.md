@@ -107,8 +107,7 @@ AgentTerms/FEDENV. Raw M/EEG stays on D:, sha-referenced; 280 GB download deferr
 **Double Binary Black Hole Comms Quant Prism**
 ([`docs/DOUBLE-BINARY-BLACK-HOLE-COMS-QUANT-PRISM.md`](docs/DOUBLE-BINARY-BLACK-HOLE-COMS-QUANT-PRISM.md)):
 design bridge from the older double/binary-black-hole consent capsule to Q-PRISM cube/quant
-tuples and HBI/HBP `json=0` receipts. This is a bounded simulator/design cell, not a live
-communications tunnel or hardware-fire claim.
+tuples and HBI/HBP `json=0` receipts. `host8/dbbh_coms_quant_prism.rs` is the measured Rust receipt harness for the 64/256/1024/HyperBEHCS ladder and address-only crossing. This is not a live communications tunnel or hardware-fire claim.
 
 ## Bilateral build
 
@@ -134,6 +133,8 @@ tests/              physics sanity + harness-integrity (honest-null + power) tes
 docs/CLAIMS-GATE.md what a "win" may and may not claim
 docs/DOUBLE-BINARY-BLACK-HOLE-COMS-QUANT-PRISM.md
                     double/binary-black-hole consent capsule + Q-PRISM quant tuple design
+host8/dbbh_coms_quant_prism.rs
+                    Rust Host8 receipt harness: BEHCS 64/256/1024 + HyperBEHCS 60D
 ```
 
 *Credit: reframing from an untestable metaphysical claim to a blinded, simulator-grounded
