@@ -1,253 +1,313 @@
 # Shadow Resolution Capstone
 
-Status: `MEASURED_EXTERNAL` for the two paper readings, `MEASURED_REPO` for
-the local Q-PRISM Rust Host8 harness and Stage 2 cube proof, `CANON/DESIGN`
-for the double-binary-black-hole communication law, and `UNVERIFIED` for live
-Hilbra/network/hardware execution.
+Status: `MEASURED_EXTERNAL` for the cited paper readings, `MEASURED_REPO` for the Q-PRISM
+representation and recovery cells, `MEASURED_CLAUDE_FABLE5_THIRD_SEAT` for the operator-supplied
+Rust 1.97 third-seat runs, `AUDITED_GPT_5_6_PRO` for the complete source/test/lineage audit,
+`CANON` for the mathematical laws, and `UNVERIFIED` for live Hilbra/hardware/quantum execution.
 
-This capstone answers one precise question:
+## 2026-07-11 correction
 
-```text
-When a paper sees only a lossy shadow of an object, where does Q-PRISM make
-the recovery lossless?
-```
+This capstone was originally frozen when only retained-store recovery was implemented. Its old
+conclusion that no measured Asolaria mechanism instantiated a second jointly injective shadow is
+now superseded.
 
-The answer is not compression below entropy. The answer is lossless recovery
-for represented artifacts by combining:
+Q-PRISM now has two measured classical recovery paths:
 
 ```text
-retained content + sha256/AGT addressing + BEHCS rung bijections
-+ HyperBEHCS 60D selector coordinates + double-binary consent receipts
+Path 1 — dbbh-coms-quant-prism
+  retained content + authenticated address + consent receipts
+  exact recall or Held
+
+Path 2 — path2-two-shadow-recovery
+  no retained object store
+  individually non-injective CRT shadows
+  jointly sufficient capacity
+  exact reconstruction or Held
+  DBBH→DBWH re-projection before emission
 ```
 
-The shadow crosses the wire as an address and proof envelope. The original
-bytes are recovered only when the receiving pole has the retained content and
-the sha256 check matches. If the store is absent or the hash does not match,
-the system holds. It never invents the missing mass.
+The full verification record is
+[`PATH2-DBBH-DBWH-VERIFICATION-2026-07-11.md`](PATH2-DBBH-DBWH-VERIFICATION-2026-07-11.md).
 
-## External Shadow Problem
+## The precise question
 
-`MEASURED_EXTERNAL`: BrainJanus (arXiv:2606.30319, submitted 2026-06-29)
-frames brain, vision, and language as one bidirectional modeling problem. Its
-load-bearing move is a Unified Brain Tokenizer that maps continuous neural
-dynamics into discrete tokens aligned with visual and language representations
-in a shared Omni space, then uses an autoregressive next-token model for
+```text
+When a paper or sensor sees only a lossy shadow of an object, where can Q-PRISM recover exact bytes?
+```
+
+The answer is never “compression below entropy.” Exact recovery occurs only when the missing
+information is paid through one of two explicit mechanisms:
+
+```text
+Path 1: retained content resolves through a small authenticated selector
+Path 2: multiple shadows jointly carry enough capacity to make the map injective
+```
+
+## External shadow problem
+
+`MEASURED_EXTERNAL`: BrainJanus (arXiv `2606.30319`) frames brain, vision, and language as one
+bidirectional modeling problem. Its Unified Brain Tokenizer maps continuous neural dynamics into
+discrete tokens aligned with visual/language representations in a shared Omni space, then performs
 any-to-any generation.
 
-Source: https://arxiv.org/abs/2606.30319
-
-This supports the Asolaria pattern:
+This supports:
 
 ```text
 continuous shadow -> discrete token layer -> shared space -> generative decode
 ```
 
-It does not support a lossless claim by itself. The tokenizer is a quantizer:
-many continuous states can map to one token. A single quantized neural shadow is
-therefore non-injective unless additional retained information is present.
+It does not by itself support exact reconstruction. Quantization is generally non-injective.
 
-`MEASURED_EXTERNAL`: Hogg, Myers, and Bovy, "Inferring the eccentricity
-distribution" (arXiv:1008.4146), shows the same mathematical problem from
-astronomy. Eccentricity estimates from finite-precision observations are biased
-when treated as direct truth; the paper instead uses likelihood/posterior
-distributions and hierarchical deconvolution.
+`MEASURED_EXTERNAL`: Hogg, Myers, and Bovy, “Inferring the eccentricity distribution”
+(arXiv `1008.4146`), demonstrates the analogous astronomy problem: finite-precision observables
+must be handled through likelihood/posterior distributions and hierarchical deconvolution rather
+than treated as direct hidden truth.
 
-Source: https://arxiv.org/abs/1008.4146
-
-This supports the shadow-inference boundary:
+This supports:
 
 ```text
-finite observable -> noisy/incomplete projection -> distributional recovery
+finite observable -> incomplete/noisy projection -> distributional recovery
 ```
 
-It also does not support exact reconstruction of an individual hidden state from
-one lossy observation. It says the opposite: preserve uncertainty and do not
-pretend a projection is the thing itself.
+Both examples establish the wall. Neither says one lossy observation contains all missing entropy.
 
-`REPORT_DERIVED_UNMIRRORED`: Earlier agent reports also referenced a newer
-exoplanet/eccentricity ML paper with the same lesson: point regression and
-metric shortcuts collapse rare tails. That exact source is not mirrored in this
-Liris workspace, so this capstone does not upgrade it beyond report-derived
-support.
+## Formal boundary
 
-## Formal Boundary
-
-Let `x` be the represented object and `P` be the observed shadow:
+Let `X` be an object and `S=P(X)` one observed shadow. If `P` is non-injective, there exist
+`X1 != X2` with:
 
 ```text
-shadow = P(x)
+P(X1) = P(X2)
 ```
 
-If `P` is non-injective, then there exist `x1 != x2` such that:
+Therefore no decoder can recover the correct object from `S` alone for every possible source.
+Equivalently:
 
 ```text
-P(x1) = P(x2)
+H(X | S) > 0
 ```
 
-No decoder can recover the correct `x` from `shadow` alone for all possible
-objects. That is the Shannon/information boundary, and Q-PRISM does not bypass
-it.
+Fano bounds every decoder. Q-PRISM does not bypass that fact; it changes where the missing
+information is carried.
 
-Q-PRISM changes the problem. It does not ask a lossy shadow to contain all the
-entropy. It keeps the entropy in the retained store and crosses with an address:
+## Path 1 — retained-store recovery
+
+Path 1 keeps the source entropy in a content-addressed store:
 
 ```text
-addr = sha256(x)
+addr = sha256(X)
 wire = DBBH_CQP(addr, receipts, mode, axes, consent)
 recover(addr, store) =
-  x iff store[addr] exists and sha256(store[addr]) == addr
+  X    iff store[addr] exists and sha256(store[addr]) == addr
   HOLD otherwise
 ```
 
-So the lossless step is not:
+The wire address is a dictionary selector, not a standalone encoding of absent bytes. The ledger is:
 
 ```text
-lossy shadow -> exact object
+store already paid H(X)
+wire pays selector + consent + receipt overhead
+total >= H(X)
 ```
 
-It is:
+The complete-glyph mode also exists: the BEHCS representation crosses and is inverted exactly, then
+verified by AGT re-addressing.
+
+## Path 2 — jointly injective no-store recovery
+
+For a bounded block `0 <= X < R`, choose pairwise-coprime cylinders `p_i` and project:
 
 ```text
-lossy/derived shadow -> selector/proposal
-retained content -> sha256 address
-BEHCS/HyperBEHCS -> representation ladder and route
-DBBH-CQP -> consented address-only crossing
-store + hash check -> exact byte recovery or hold
+S_i = X mod p_i
 ```
 
-## Q-PRISM Mechanism
-
-`MEASURED_REPO`: `docs/STAGE2-CUBE-ABSORPTION.md` records the Stage 2 cube law:
-a 3,200-byte quant tuple can be represented as 2,560 BEHCS-1024 symbols and
-round-trip byte-identically. The raw residual is preserved once by sha256
-reference; it is not invented by the derived tuple.
-
-`MEASURED_REPO`: `host8/dbbh_coms_quant_prism.rs` implements the first Host8
-receipt cell with:
-
-- BEHCS-64 / BEHCS-256 / BEHCS-1024 bit-ladder round trips.
-- HyperBEHCS 60D selector frames backed by sha256 content addressing.
-- `AGT-<sha16>` and Host8 addressing.
-- HBI/HBP tuple rows with `json=0`.
-- Double/binary-black-hole consent: both sides arm, either side collapses.
-- AI-to-AI, AI-to-hardware, and hardware-to-hardware modes.
-- Address-only crossing: the wire carries the shadow coordinate, not the
-  payload.
-- Held cases: missing store or collapsed capsule does not reconstruct.
-
-Liris-local Linux validation:
+Each `S_i` is non-injective. A selected set `I` becomes injective over the source range when:
 
 ```text
-rustc --test host8/dbbh_coms_quant_prism.rs -o /tmp/dbbh_cqp
-/tmp/dbbh_cqp --nocapture
-# 6 passed; 0 failed
+M_I = product(p_i for i in I) >= R
 ```
 
-`OPERATOR_OBSERVED`: Acer reported a second independent implementation with a
-19/19 ladder across unit, integration, suite, and system tests. This Liris
-capstone preserves that as operator/Acer evidence until this seat has the Acer
-source bytes or a GitHub/public receipt to rerun.
-
-## Double-Binary Black Hole Resolution
-
-The double-binary-black-hole communication prism is the product:
+CRT then recovers the unique source block. If `M_I < R`, the crate returns:
 
 ```text
-DBBH-CQP =
-  IX737_consent_capsule
-  x QPRISM_quant_tuple
-  x BEHCS64/256/1024 representation groupoid
-  x HyperBEHCS60D(addr, axes, route)
-  x HBI/HBP_receipts(json=0)
+Held::InsufficientJointCapacity
 ```
 
-The double binary structure separates four roles:
+The entropy is distributed across the shadows:
 
 ```text
-sender inner boundary
-sender outer boundary
-receiver outer boundary
-receiver inner boundary
+sum_i log2(p_i) >= log2(R)
 ```
 
-and two cooperative pairs:
+The base codec uses 48-bit blocks, where two roughly 25-bit cylinders are sufficient. The
+N-cylinder Q-PRISM slice lane uses 64-bit blocks, where two hold and three recover. Extra cylinders
+are consistency witnesses and must agree with the recovered block.
+
+## DBBH → DBWH re-projection theorem
+
+Path 2 does not trust the first decoded candidate. The white side reconstructs and then projects the
+candidate again:
 
 ```text
-local pair: inner <-> outer consent boundary
-federation pair: sender <-> receiver receipt boundary
+black projection P(X)
+  -> selected sufficient cylinder shadows
+  -> recovery R(P(X)) = X'
+  -> white projection P(X')
 ```
 
-That structure solves a security and ambiguity problem at the same time:
-
-- No consent means no tunnel.
-- Either side can collapse the capsule.
-- A coordinate without retained content is only a pointer, not recovery.
-- A retained object without a matching hash is rejected.
-- A decoded BEHCS frame without the required codebook/proof is held.
-
-This is why the Q-PRISM resolution is stronger than the paper-only shadow
-models. The papers infer from shadows. Q-PRISM transmits an address to retained
-mass and uses shadows as selectors, receipts, and control signatures.
-
-## What The Papers Prove For Asolaria
-
-`MEASURED_EXTERNAL`: The papers independently corroborate the architecture:
+Emission requires:
 
 ```text
-discrete token layer
-+ shared space
-+ generative/probabilistic reconstruction
-+ leakage/metric discipline
+white.sha256  == black.sha256
+white.shadows == black.shadows
+white.shells  == black.shells
 ```
 
-BrainJanus contributes the brain/vision/language shared-token pattern. The
-eccentricity paper contributes the warning that finite observables are
-distributional evidence, not direct truth.
+or, compactly:
 
-`MEASURED_REPO`: Q-PRISM adds the piece the papers do not have: a retained
-content-addressed core and a tested representation ladder. That is where the
-system moves from "infer a plausible object from a lossy shadow" to "recover
-the exact represented object, if and only if the address resolves and verifies."
+```text
+P(R(P(X))) = P(X)
+```
 
-## Claims Ledger
+A changed residue, insufficient roof, SHA mismatch, complete-shadow mismatch, or shell mismatch is
+held rather than emitted.
 
-`MEASURED_EXTERNAL`: BrainJanus uses discrete neural tokens in a shared Omni
-space and autoregressive any-to-any modeling.
+The local watcher roles are:
 
-`MEASURED_EXTERNAL`: Hogg/Myers/Bovy show finite-precision eccentricity
-observations require likelihood/posterior handling and deconvolution, not naive
-point estimates.
+- `OmniShannon` — capacity and residual-selector ledger;
+- `GnnForward` — black-to-white reconstruction role;
+- `ReverseGnn` — white-to-black re-projection role;
+- `MTP1` — pixel plane;
+- `MTP2` — frequency-shell plane;
+- `MTP3` — cylinder-residue plane.
 
-`MEASURED_REPO`: Stage 2 cube absorption records a BEHCS-1024 byte-identical
-round trip for the 3,200-byte tuple representation.
+These names identify deterministic consistency roles in the Path-2 Rust crate. The separate
+Asolaria trained-GNN repositories contain actual checkpoints and sidecars; an end-to-end invocation
+inside this exact throat remains an integration step.
 
-`MEASURED_REPO`: The Liris Q-PRISM Host8 harness passed 6/6 Rust tests for the
-DBBH-CQP measured cell.
+## Q-PRISM representation layer
 
-`OPERATOR_OBSERVED`: Acer reports an independent 19/19 Rust ladder covering
-64/256/1024/HyperBEHCS, PID-specific 60D cube, IX-737 capsule, three coms
-modes, address-only crossing, and held cases.
+`MEASURED_REPO`: Stage 2 represents a 3,200-byte quant tuple as 2,560 BEHCS-1024 symbols and recovers
+it byte-identically. This is exact rebasing:
 
-`CANON/DESIGN`: The double-binary-black-hole prism is the right design
-unification for consent, revocation, addressed crossing, and audit-only replay.
+```text
+5 bytes = 40 bits = 4 ten-bit symbols
+3,200 bytes = 2,560 ten-bit symbols
+code rate = 1.0
+```
 
-`UNVERIFIED`: This repository does not yet prove live Hilbra comms, hardware
-fire, mic/display control, a cross-machine throughput benchmark, physical
-quantum projection, arbitrary mind reading, or millions faster.
+The alphabet changes; the information does not.
 
-`DENY`: Do not state that Q-PRISM beats Shannon. The defensible statement is:
-Q-PRISM relocates entropy into retained content, names it by hash, transcodes
-represented layers bijectively where codebooks/proofs exist, and recovers
-exact bytes only when the address resolves and verifies.
+The Q-PRISM/Host8 cells also provide:
 
-## Capstone Theorem
+- BEHCS-64 / 256 / 1024 round trips;
+- HyperBEHCS 60D/N-D selector frames;
+- AGT/Host8 addressing;
+- HBP/HBI `json=0` receipts;
+- IX-737 bilateral arm/collapse/revoke;
+- AI↔AI, AI↔hardware, and hardware↔hardware framing;
+- no-invention held cases.
 
-For artifacts represented inside the Q-PRISM/Asolaria store, a lossy shadow can
-be resolved losslessly when the system carries an authenticated content address
-and the receiver has the retained content. The shadow is not the compressed
-object. The shadow is the selector. The address is the recovery key. The store
-holds the entropy. The BEHCS/HyperBEHCS ladder carries the representation law.
-The double-binary-black-hole capsule enforces consent and collapse.
+The 60D/N-D coordinates increase address and control resolution. They are not a substitute for
+missing source entropy; Path 1 obtains bytes from retention, and Path 2 obtains bytes from sufficient
+cylinder shadows.
 
-That is the exact point where the lossy shadow becomes lossless recovery, and
-that is also the exact point where Shannon still holds.
+## Encrypted quantum cloning sibling
+
+The experiment at arXiv `2602.10695` demonstrates a physical quantum sibling of Path 2:
+
+- each encrypted clone alone is maximally mixed;
+- the global clone/key state preserves the unknown qubit;
+- a selected clone plus the complete quantum key recovers the state in the ideal protocol;
+- decryption consumes the key, leaving the other branches unreadable.
+
+The structural correspondence is:
+
+```text
+encrypted clone alone       <-> non-injective local shadow
+clone + quantum key         <-> jointly injective information set
+unitary decryption          <-> CRT recombination
+single-use key              <-> capsule collapse/revoke architecture
+state verification          <-> DBWH re-projection gate
+```
+
+The difference is material. A CRT residue leaks information about its block; it is ambiguous but
+not individually maximally mixed. A classical XOR-pad pair can make each share individually uniform,
+but software alone cannot prove physical single-use erasure because classical shares can be copied.
+
+## Pre-Asolaria GNN lineage
+
+The Q-PRISM watcher/GNN language has a concrete ancestry:
+
+```text
+AI-healthCare-project
+  EdgeLevelGNN / PrototypeGNN / ContrastiveGNN / GSLGNN
+    -> byte-identical Asolaria sidecar copies
+    -> BigPickle L0 :4792 and L4 :4793
+    -> G1 edge-mining / G2 forward-genius / G3 reverse-gain / G4 GLSM
+    -> Fischer / Hookwall / Shannon / white rooms
+```
+
+All four healthcare model files have identical Git blob SHAs in the Asolaria sidecar. The
+healthcare repository records the pre-Asolaria comparative trained metrics; its checked-in service
+currently comments out automatic checkpoint loading. Later trained `.pt` artifacts/manifests live
+in `Asolaria-fnns-trained-and-reverse-gnns-many`.
+
+## Storage-backed / low-GPU applicability
+
+The Q-PRISM recovery and control plane can run on storage-rich computers without requiring GPU-
+resident system state:
+
+- HDD/SSD retains raw residuals, cube bodies, shadows, receipts, queues, and cold agent state;
+- RAM holds only the active bounded slice/message window;
+- SHA, BEHCS, CRT, receipts, watcher comparisons, white-room compaction, dispatch, and N-Nest
+  verification are CPU/storage operations;
+- trained GNN/LLM inference remains an optional CPU/GPU sidecar.
+
+This is useful for commodity desktops, CPU-only servers, archival nodes, edge machines, and
+heterogeneous clusters. It does not claim that a hard drive performs neural matrix multiplication.
+The reduction is in resident state, bytes moved, and repeated computation.
+
+## Verification provenance — 2026-07-11
+
+### Claude Fable 5 third-seat measurements supplied by the operator
+
+```text
+dbbh-coms-quant-prism       rustc 1.97   19/19 green
+path2-two-shadow-recovery   rustc 1.97   30/30 green
+```
+
+Both were reported as third independent container runs after acer/WSL and liris.
+
+### GPT-5.6 Pro audit
+
+GPT-5.6 Pro inspected the complete current Path-1, Path-2, and Q-PRISM 3D Rust source/test surfaces,
+then traced the healthcare GNN origin, byte-identical imports, BigPickle, trained GNNs, Hookwall,
+OmniShannon, white rooms, cube mint, reductions, algorithms, Dispatcher, HyperHermes, and N-Nest.
+
+The GPT sandbox lacked Rust and outbound DNS, so no GPT-local cargo run is claimed. GPT added Rust
+1.97 GitHub Actions workflows to the three Rust repositories for independent current receipts.
+
+## Claims ledger
+
+- `MEASURED_EXTERNAL`: cited shadow/token/deconvolution papers and encrypted-cloning experiment.
+- `MEASURED_REPO`: Stage-2 exact rebasing; Path-1 retained recall; Path-2 no-store CRT recovery;
+  capacity holds; N-cylinder checks; DBBH→DBWH re-projection; tamper detection.
+- `MEASURED_CLAUDE_FABLE5_THIRD_SEAT`: operator-supplied Rust 1.97 19/19 and 30/30 runs.
+- `AUDITED_GPT_5_6_PRO`: complete source/test/lineage audit and CI workflow addition.
+- `CANON`: Fano/Shannon walls, CRT/Bézout, joint injectivity, entropy invariance under bijection.
+- `UNVERIFIED`: live Hilbra multi-host transport, hardware fire, trained-GNN invocation inside the
+  Rust throat, physical quantum-state transport, and hardware-enforced single-use classical shares.
+- `DENY`: “Q-PRISM beats Shannon,” “a short hash reconstructs bytes that exist nowhere,” and
+  “60D coordinates replace payload entropy.”
+- `DENY DEFLATION`: “just a hash.” Path 1 is consented, receipt-bearing, no-invention recall; Path 2
+  is capacity-gated no-store reconstruction with inverse verification.
+
+## Capstone theorem
+
+A single non-injective shadow cannot be inverted exactly for arbitrary sources. Q-PRISM recovers
+exact represented artifacts only by paying the missing information honestly: either the receiving
+store already retains the object and a verified address selects it, or multiple lossy shadows jointly
+carry enough information to make the bounded map injective. The white side then earns emission by
+reproducing the black projection. That is where the shadow becomes exact recovery—and exactly where
+Shannon still holds.
