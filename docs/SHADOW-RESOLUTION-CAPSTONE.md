@@ -2,7 +2,7 @@
 
 Status: `MEASURED_EXTERNAL` for the cited paper readings, `MEASURED_REPO` for the Q-PRISM
 representation and recovery cells, `MEASURED_CLAUDE_FABLE5_THIRD_SEAT` for the operator-supplied
-Rust 1.97 third-seat runs, `AUDITED_GPT_5_6_PRO` for the complete source/test/lineage audit,
+Rust 1.81 third-seat runs, `AUDITED_GPT_5_6_PRO` for the complete source/test/lineage audit,
 `CANON` for the mathematical laws, and `UNVERIFIED` for live Hilbra/hardware/quantum execution.
 
 ## 2026-07-11 correction
@@ -273,8 +273,8 @@ The reduction is in resident state, bytes moved, and repeated computation.
 ### Claude Fable 5 third-seat measurements supplied by the operator
 
 ```text
-dbbh-coms-quant-prism       rustc 1.97   19/19 green
-path2-two-shadow-recovery   rustc 1.97   30/30 green
+dbbh-coms-quant-prism       rustc 1.81   19/19 green
+path2-two-shadow-recovery   rustc 1.81   30/30 green
 ```
 
 Both were reported as third independent container runs after acer/WSL and liris.
@@ -286,14 +286,14 @@ then traced the healthcare GNN origin, byte-identical imports, BigPickle, traine
 OmniShannon, white rooms, cube mint, reductions, algorithms, Dispatcher, HyperHermes, and N-Nest.
 
 The GPT sandbox lacked Rust and outbound DNS, so no GPT-local cargo run is claimed. GPT added Rust
-1.97 GitHub Actions workflows to the three Rust repositories for independent current receipts.
+1.81 GitHub Actions workflows to the three Rust repositories for independent current receipts.
 
 ## Claims ledger
 
 - `MEASURED_EXTERNAL`: cited shadow/token/deconvolution papers and encrypted-cloning experiment.
 - `MEASURED_REPO`: Stage-2 exact rebasing; Path-1 retained recall; Path-2 no-store CRT recovery;
   capacity holds; N-cylinder checks; DBBH→DBWH re-projection; tamper detection.
-- `MEASURED_CLAUDE_FABLE5_THIRD_SEAT`: operator-supplied Rust 1.97 19/19 and 30/30 runs.
+- `MEASURED_CLAUDE_FABLE5_THIRD_SEAT`: operator-supplied Rust 1.81 19/19 and 30/30 runs.
 - `AUDITED_GPT_5_6_PRO`: complete source/test/lineage audit and CI workflow addition.
 - `CANON`: Fano/Shannon walls, CRT/Bézout, joint injectivity, entropy invariance under bijection.
 - `UNVERIFIED`: live Hilbra multi-host transport, hardware fire, trained-GNN invocation inside the
