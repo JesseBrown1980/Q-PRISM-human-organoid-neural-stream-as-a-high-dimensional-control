@@ -42,8 +42,8 @@ CI    -> immutable committed-head execution
 Current anchors:
 
 ```text
-Path 1: third-seat rustc 1.97, 19/19; CI green
-Path 2: third-seat rustc 1.97, 30/30; CI green
+Path 1: third-seat rustc 1.81, 19/19; CI green
+Path 2: third-seat rustc 1.81, 30/30; CI green
 3D harness: CI all targets green
 ```
 
