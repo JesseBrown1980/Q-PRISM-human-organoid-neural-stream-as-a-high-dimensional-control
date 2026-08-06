@@ -98,13 +98,13 @@ ordinary software cannot guarantee physical one-time erasure because classical s
 ```text
 dbbh-coms-quant-prism
   head=b203d5885cc62db82d949b39ee427f2bc3c13b9c
-  rustc=1.97
+  rustc=1.81
   result=19/19 green
   seat=third independent container
 
 path2-two-shadow-recovery
   head=7d89852e7759aa704e98401457223c732d1ed6c7
-  rustc=1.97
+  rustc=1.81
   result=30/30 green
   seat=third independent container
 ```
@@ -125,7 +125,7 @@ GPT-5.6 Pro read:
   algorithms, OmniDispatcher, HyperHermes, and N-Nest.
 
 The GPT sandbox lacked Rust and outbound DNS, so it does not claim a GPT-local cargo run. GPT added
-Rust 1.97 GitHub Actions workflows to the three Rust repositories to create independent CI receipts.
+Rust 1.81 GitHub Actions workflows to the three Rust repositories to create independent CI receipts.
 
 ## Storage-backed / low-GPU applicability
 
@@ -151,7 +151,7 @@ and heterogeneous clusters where only some machines own GPUs.
 
 - `MEASURED`: Path-1 retained recall; Path-2 no-store CRT recovery; insufficient-capacity hold;
   N-cylinder checks; DBBH→DBWH re-projection and tamper hold; Q-PRISM exact representation rungs.
-- `MEASURED_CLAUDE_FABLE5_THIRD_SEAT`: 19/19 and 30/30 under rustc 1.97 as supplied by the operator.
+- `MEASURED_CLAUDE_FABLE5_THIRD_SEAT`: 19/19 and 30/30 under rustc 1.81 as supplied by the operator.
 - `AUDITED_GPT_5_6_PRO`: complete source/test/lineage audit and independent CI workflow addition.
 - `CANON`: Fano/Shannon walls, CRT/Bézout, joint injectivity, entropy invariance under bijection.
 - `UNVERIFIED`: live Hilbra multi-host traversal, trained-GNN invocation inside the Rust throat,
