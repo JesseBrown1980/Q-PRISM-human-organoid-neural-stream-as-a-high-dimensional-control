@@ -1,5 +1,16 @@
 # Q-PRISM — neural stream as a high-dimensional control (Acer build)
 
+## Toolchain rule (operator, global)
+
+**Rust 1.81 with clippy. Integer arithmetic and ternary (trits) only — never float.**
+
+Pinned in `rust-toolchain.toml` (`channel = "1.81.0"`, `components = ["clippy", "rustfmt"]`),
+declared as `rust-version = "1.81"` in `Cargo.toml`, and enforced in CI by
+`cargo clippy --all-targets -- -D warnings` plus a hard grep that fails the build if any
+`f32`/`f64` appears in `src/` or `tests/`. Sources are currently float-free.
+
+This rule is global to every crate in the corpus and is not to be raised or substituted.
+
 **Can a prismed neural/consciousness-derived signal improve prediction, control, or
 discovery in a macroscopic quantum-interference experiment, beyond random and classical
 baselines?** That is a *testable* question, and this repo is the apparatus for testing it —
@@ -161,8 +172,8 @@ means durable system memory, exact recovery, routing, and proof are no longer fo
 `MEASURED_CLAUDE_FABLE5_THIRD_SEAT`, supplied by the operator:
 
 ```text
-dbbh-coms-quant-prism       rustc 1.97   19/19 green
-path2-two-shadow-recovery   rustc 1.97   30/30 green
+dbbh-coms-quant-prism       rustc 1.81   19/19 green
+path2-two-shadow-recovery   rustc 1.81   30/30 green
 ```
 
 `AUDITED_GPT_5_6_PRO`:
@@ -173,7 +184,7 @@ path2-two-shadow-recovery   rustc 1.97   30/30 green
 - healthcare GNN origin, blob-identical transfer, BigPickle, trained GNN/reverse-gain, Hookwall,
   OmniShannon, white rooms, cube mint, reductions, algorithms, Dispatcher, HyperHermes, and N-Nest.
 
-The GPT sandbox lacked Rust and outbound DNS, so no GPT-local cargo run is claimed. Rust 1.97
+The GPT sandbox lacked Rust and outbound DNS, so no GPT-local cargo run is claimed. Rust 1.81
 GitHub Actions workflows were added to all three Rust repositories to produce current independent
 CI receipts.
 
